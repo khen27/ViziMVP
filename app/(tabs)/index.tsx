@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, Alert, ViewStyle } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -20,7 +20,9 @@ export default function TabOneScreen() {
       <TouchableOpacity style={styles.filterButton}>
         <Ionicons name="filter" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.plusButton}>
+      <TouchableOpacity style={styles.plusButton} onPress={() => {
+        Alert.alert('hey David, this is code! :)');
+      }}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.searchButton}>
@@ -32,6 +34,25 @@ export default function TabOneScreen() {
     </View>
   );
 }
+
+const buttonBasicStyle: any = { // any - temporary hack here
+  position: 'absolute',
+  padding: 14,
+  borderRadius: 28,
+  elevation: 5, // Android shadow
+  shadowColor: '#000', // iOS shadow
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.3,
+  shadowRadius: 4,
+};
+const primaryButtonBasicStyle = {
+  ...buttonBasicStyle,
+  backgroundColor: '1E3A8A',
+};
+const secondaryButtonBasicStyle = {
+  ...buttonBasicStyle,
+  backgroundColor: 'white',
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -53,55 +74,32 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   filterButton: {
-    position: 'absolute',
+    ...secondaryButtonBasicStyle,
     bottom: 120,
     left: 20,
-    backgroundColor: 'white',
-    padding: 14,
-    borderRadius: 28,
-    elevation: 5, // Android shadow
-    shadowColor: '#000', // iOS shadow
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
   },
   plusButton: {
-    position: 'absolute',
+    ...primaryButtonBasicStyle,
     bottom:120,
     right: 20,
-    backgroundColor: '#1E3A8A',
-    padding: 18,
-    borderRadius: 36,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
   },
   searchButton: {
-    position: 'absolute',
+    ...secondaryButtonBasicStyle,
     bottom: 30,
     left: 20,
-    backgroundColor: '#FFF',
-    padding: 18,
-    borderRadius: 36,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
   },
   locateButton: {
-    position: 'absolute',
+    ...secondaryButtonBasicStyle,
     bottom: 30,
     right: 20,
-    backgroundColor: '#FFF',
-    padding: 18,
-    borderRadius: 36,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
   },
 });
+
+/*
+
+create a steate that is an array of markers
+lat and longitude
+map the array to marker components inside the map view
+onclick generate new coorinates and add to the array
+
+*/
