@@ -1,12 +1,17 @@
 import { StyleSheet, TouchableOpacity, Alert, ViewStyle } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import React, { useState } from 'react';
+import { View } from '@/components/Themed';
 import MapView, {Marker} from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 
 
+const createMarker = (lon: number, lat: number) => <Marker coordinate={{longitude: lon, latitude: lat}}/>
+
 export default function TabOneScreen() {
+  
+  const [markers, setMarkers] = useState([{ lat: 0, lon: 0 }]);
+
   return (
     <View style={styles.container}>
       <MapView style={styles.map}
@@ -16,12 +21,24 @@ export default function TabOneScreen() {
           latitudeDelta: 0.06,
           longitudeDelta: 0.035,
         }}>
+          {
+            // [{lat. lon}. {lat, lon}]  .map((lat, lon) => Marker<lat, lon>)
+            // [1, 2, 3].map(number => number*2)
+            //markers.map(markers => createMarker())
+          }
       </MapView>
       <TouchableOpacity style={styles.filterButton}>
         <Ionicons name="filter" size={24} color="black" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.plusButton} onPress={() => {
-        Alert.alert('hey David, this is code! :)');
+        var newMarkers = [
+          ...markers, 
+          {
+            lat: 25.72 + 0.12*Math.random(),
+            lon: -80 + 0.07*Math.random()
+          }
+        ]
+        setMarkers(newMarkers);
       }}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
