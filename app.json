@@ -4,10 +4,10 @@
     "slug": "vizi",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/vizi-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/vizi-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,19 +15,22 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.vizi"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/vizi-logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.vizi"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/vizi-logo.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "scheme": "vizi"
   }
 }

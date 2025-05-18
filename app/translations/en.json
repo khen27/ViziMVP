@@ -1,0 +1,16 @@
+{
+  "feedback": {
+    "title": "We really want to hear from you!",
+    "subtitle": "Your input is valuable in helping us better understand your needs and tailor our service accordingly.",
+    "emojis": {
+      "poor": "Poor",
+      "fair": "Fair",
+      "okay": "Okay",
+      "good": "Good",
+      "perfect": "Perfect"
+    },
+    "textInputPlaceholder": "Share your thoughts to help us improve. Avoid including personal or sensitive information.",
+    "contactMe": "Contact me! I can share more thoughts.",
+    "submit": "Submit"
+  }
+} 

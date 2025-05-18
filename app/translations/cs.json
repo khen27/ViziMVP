@@ -1,0 +1,16 @@
+{
+  "feedback": {
+    "title": "Opravdu chceme slyšet váš názor!",
+    "subtitle": "Vaše informace jsou cenné při lepším porozumění vašim potřebám a přizpůsobení naší služby.",
+    "emojis": {
+      "poor": "Špatné",
+      "fair": "Slabé",
+      "okay": "OK",
+      "good": "Dobré",
+      "perfect": "Skvělé"
+    },
+    "textInputPlaceholder": "Sdílejte své myšlenky, které nám pomohou se zlepšit. Nezahrnujte osobní nebo citlivé informace.",
+    "contactMe": "Kontaktujte mě! Mohu sdílet více myšlenek.",
+    "submit": "Odeslat"
+  }
+} 

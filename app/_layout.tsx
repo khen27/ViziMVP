@@ -5,6 +5,22 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { Platform, LogBox, AppRegistry } from 'react-native';
+
+// Try to load RNLocalize early to avoid module issues
+if (Platform.OS !== 'web') {
+  try {
+    require('react-native-localize');
+  } catch (error) {
+    console.warn('Failed to load react-native-localize:', error);
+  }
+}
+
+// Ignore specific warnings that may be false positives
+LogBox.ignoreLogs([
+  'Required default export not found',
+  'TurboModuleRegistry.getEnforcing',
+]);
 
 import { useColorScheme } from '@/components/useColorScheme';
 
@@ -23,6 +39,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
+    'DMSans-Regular': require('../assets/fonts/DMSans-Regular.ttf'),
+    'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,10 +12,13 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
+  AppState,
 } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { LinearGradient } from 'expo-linear-gradient';
+import EmojiRating from '@/app/components/EmojiRating';
+import i18n from '@/app/utils/i18n';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,11 +29,26 @@ export default function TabThreeScreen() {
   const [selectedEmoji, setSelectedEmoji] = useState(3); // Default to the "Good" emoji (🙂)
   const [contactMe, setContactMe] = useState(false);
   const [feedback, setFeedback] = useState('');
+  const [, forceUpdate] = useState(0);
 
   const [fontsLoaded] = useFonts({
     'DMSans-Regular': require('@/assets/fonts/DMSans-Regular.ttf'),
     'DMSans-Medium': require('@/assets/fonts/DMSans-Medium.ttf'),
   });
+
+  // Set up a listener to force a UI update when app becomes active
+  // This ensures language changes are reflected
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        forceUpdate(prev => prev + 1);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   React.useEffect(() => {
     if (fontsLoaded) {
@@ -43,14 +61,6 @@ export default function TabThreeScreen() {
     return null;
   }
 
-  const emojis = [
-    { icon: '😭', label: 'Terrible' },
-    { icon: '😔', label: 'Bad' },
-    { icon: '😐', label: 'Okay' },
-    { icon: '🙂', label: 'Good' },
-    { icon: '🥰', label: 'Amazing' },
-  ];
-
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -58,7 +68,7 @@ export default function TabThreeScreen() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <LinearGradient
-        colors={['#EAF2F9', '#EAF2F9', '#C9DEFC']}
+        colors={['#EAF2F9', '#C9DEFC']}
         style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -72,53 +82,22 @@ export default function TabThreeScreen() {
           >
             <View style={styles.content}>
               <View style={styles.header}>
-                <Text style={styles.title}>We really want to hear from you!</Text>
+                <Text style={styles.title}>{i18n.t('feedback.title')}</Text>
                 <Text style={styles.subtitle}>
-                  Your input is valuable in helping us better understand your needs and tailor our service accordingly.
+                  {i18n.t('feedback.subtitle')}
                 </Text>
               </View>
 
-              <View style={styles.emojiContainer}>
-                {emojis.map((emoji, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[
-                      styles.emojiButton,
-                      selectedEmoji !== index && styles.unselectedEmoji,
-                      selectedEmoji === index && { opacity: 1 },
-                    ]}
-                    onPress={() => setSelectedEmoji(index)}
-                  >
-                    {selectedEmoji === index ? (
-                      <View style={styles.selectedEmojiContainer}>
-                        <View style={styles.goodLabel}>
-                          <Text style={styles.goodLabelText}>Good</Text>
-                        </View>
-                        <LinearGradient
-                          colors={['#6A89EE', '#4694FD']}
-                          style={styles.selectedEmojiGradient}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 1 }}
-                        >
-                          <Text style={styles.selectedEmojiText}>
-                            {emoji.icon}
-                          </Text>
-                        </LinearGradient>
-                      </View>
-                    ) : (
-                      <Text style={styles.emoji}>
-                        {emoji.icon}
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <EmojiRating 
+                selectedEmoji={selectedEmoji} 
+                onSelect={setSelectedEmoji} 
+              />
 
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.textInput}
                   multiline
-                  placeholder="Share your thoughts to help us improve. Avoid including personal or sensitive information."
+                  placeholder={i18n.t('feedback.textInputPlaceholder')}
                   placeholderTextColor="rgba(0, 0, 0, 0.3)"
                   value={feedback}
                   onChangeText={setFeedback}
@@ -132,12 +111,12 @@ export default function TabThreeScreen() {
                     {contactMe && <View style={styles.checkboxInner} />}
                   </TouchableOpacity>
                   <Text style={styles.checkboxLabel}>
-                    Contact me! I can share more thoughts.
+                    {i18n.t('feedback.contactMe')}
                   </Text>
                 </View>
 
                 <TouchableOpacity style={styles.submitButton}>
-                  <Text style={styles.submitButtonText}>Submit</Text>
+                  <Text style={styles.submitButtonText}>{i18n.t('feedback.submit')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -194,64 +173,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: -0.015 * 16,
     color: 'rgba(0, 0, 0, 0.6)',
-  },
-  emojiContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    width: 360,
-    marginVertical: 25,
-  },
-  emojiButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-  },
-  unselectedEmoji: {
-    backgroundColor: '#D9D9D9',
-  },
-  emoji: {
-    fontSize: 25,
-    textAlign: 'center',
-    opacity: 0.7,
-    color: '#000000',
-  },
-  selectedEmojiContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    width: 80,
-    height: 80,
-  },
-  selectedEmojiGradient: {
-    width: 65,
-    height: 65, 
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  selectedEmojiText: {
-    fontSize: 32,
-    color: '#000000',
-  },
-  goodLabel: {
-    position: 'absolute',
-    width: 47,
-    height: 20,
-    backgroundColor: '#0B228C',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-    top: -10,
-  },
-  goodLabelText: {
-    fontFamily: 'DMSans-Medium',
-    fontSize: 13,
-    color: '#FFFFFF',
-    textAlign: 'center',
   },
   inputContainer: {
     width: 353,
