@@ -1,11 +1,84 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { LinearGradient } from 'expo-linear-gradient';
+import MaskedView from '@react-native-masked-view/masked-view';
+import { router } from 'expo-router';
+
+const { width } = Dimensions.get('window');
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 export default function OnboardingStepTwo() {
+  const [fontsLoaded] = useFonts({
+    'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf'),
+    'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
+  });
+
+  React.useEffect(() => {
+    if (fontsLoaded) {
+      // Hide splash screen once fonts are loaded
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
+        <MaskedView
+          style={styles.titleContainer}
+          maskElement={
+            <Text style={styles.title}>Vizi</Text>
+          }
+        >
+          <LinearGradient
+            colors={['#836CE8', '#4694FD']}
+            style={styles.titleGradient}
+            start={{ x: 0, y: -3.25 }}
+            end={{ x: 0, y: 3 }}
+          />
+        </MaskedView>
+
+        <Image 
+          source={require('../assets/world-map.png')}
+          style={styles.mapImage}
+          resizeMode="contain"
+        />
+
+        <View style={styles.textFrame}>
+          <Text style={styles.mainText}>Real-Time World{'\n'}Group Chats</Text>
+          <Text style={styles.subText}>
+            Connect instantly with nearby people, join{'\n'}live chats, and explore local gems.
+          </Text>
+        </View>
+
+        <View style={styles.dotsContainer}>
+          <View style={[styles.dot, styles.dotInactive]} />
+          <View style={[styles.dot, styles.dotActive]} />
+          <View style={[styles.dot, styles.dotInactive]} />
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.skipButton}
+            onPress={() => router.push('/(tabs)')}
+          >
+            <Text style={styles.skipText}>Skip</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.continueButton}
+            onPress={() => router.push('/onboarding-3')}
+          >
+            <Text style={styles.continueText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -19,6 +92,109 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  titleContainer: {
+    height: 52,
+    width: 373,
+    maxWidth: '100%',
+    marginTop: 20,
+  },
+  title: {
+    fontFamily: 'Pacifico',
+    fontSize: 42,
+    lineHeight: 52,
+    textAlign: 'center',
+    letterSpacing: 4.2,
+  },
+  titleGradient: {
+    flex: 1,
+  },
+  mapImage: {
+    width: width,
+    height: width * 0.8,
+    marginVertical: 20,
+  },
+  textFrame: {
+    width: 373,
+    maxWidth: '100%',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 32,
+  },
+  mainText: {
+    fontFamily: 'DMSans-Medium',
+    fontSize: 32,
+    lineHeight: 36,
+    textAlign: 'center',
+    letterSpacing: -0.05 * 32,
+    color: '#000000',
+  },
+  subText: {
+    fontFamily: 'DMSans-Medium',
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'center',
+    letterSpacing: -0.01 * 16,
+    color: 'rgba(0, 0, 0, 0.6)',
+  },
+  dotsContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 32,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  dotActive: {
+    width: 24,
+    backgroundColor: '#0B228C',
+  },
+  dotInactive: {
+    backgroundColor: 'rgba(11, 34, 140, 0.15)',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: 373,
+    maxWidth: '100%',
+    gap: 10,
+    marginTop: 'auto',
+    marginBottom: 20,
+  },
+  skipButton: {
+    flex: 1,
+    height: 50,
+    backgroundColor: '#EEF5FA',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 35,
+  },
+  continueButton: {
+    flex: 2,
+    height: 50,
+    backgroundColor: '#0B228C',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 35,
+  },
+  skipText: {
+    fontFamily: 'DMSans-Medium',
+    fontSize: 16,
+    lineHeight: 20,
+    letterSpacing: -0.015 * 16,
+    color: '#000000',
+  },
+  continueText: {
+    fontFamily: 'DMSans-Medium',
+    fontSize: 16,
+    lineHeight: 20,
+    letterSpacing: -0.015 * 16,
+    color: '#FFFFFF',
   },
 }); 
