@@ -64,7 +64,7 @@ export default function OnboardingScreen() {
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push('/(tabs)')}
+            onPress={() => router.push('/onboarding-2')}
           >
             <View style={styles.buttonInner}>
               <Text style={styles.buttonText}>Get Started</Text>
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     height: width * 0.6,
     marginTop: 80,
     marginBottom: 20,
+    marginLeft: 10,
   },
   textFrame: {
     width: Math.min(373, width * 0.9),

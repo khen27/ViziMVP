@@ -22,23 +22,22 @@ export default function TabOneScreen() {
           longitudeDelta: 0.035,
         }}>
           {
-            // [{lat. lon}. {lat, lon}]  .map((lat, lon) => Marker<lat, lon>)
-            // [1, 2, 3].map(number => number*2)
-            //markers.map(markers => createMarker())
+            markers.map(marker => createMarker(marker.lon, marker.lat))
           }
       </MapView>
       <TouchableOpacity style={styles.filterButton}>
         <Ionicons name="filter" size={24} color="black" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.plusButton} onPress={() => {
-        var newMarkers = [
+       /* var newMarkers = [
           ...markers, 
           {
             lat: 25.72 + 0.12*Math.random(),
             lon: -80 + 0.07*Math.random()
           }
         ]
-        setMarkers(newMarkers);
+        setMarkers(newMarkers);*/
+        Alert.alert("hello");
       }}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
@@ -64,7 +63,7 @@ const buttonBasicStyle: any = { // any - temporary hack here
 };
 const primaryButtonBasicStyle = {
   ...buttonBasicStyle,
-  backgroundColor: '1E3A8A',
+  backgroundColor: '#1E3A8A',
 };
 const secondaryButtonBasicStyle = {
   ...buttonBasicStyle,
