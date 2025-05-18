@@ -12,5 +12,14 @@
     "textInputPlaceholder": "Share your thoughts to help us improve. Avoid including personal or sensitive information.",
     "contactMe": "Contact me! I can share more thoughts.",
     "submit": "Submit"
+  },
+  "notifications": "Notifications",
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "actions": {
+    "decline": "Decline",
+    "joinGroup": "Join Group",
+    "delete": "Delete",
+    "confirmAdd": "Confirm Add"
   }
 } 

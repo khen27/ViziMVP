@@ -12,5 +12,14 @@
     "textInputPlaceholder": "Sdílejte své myšlenky, které nám pomohou se zlepšit. Nezahrnujte osobní nebo citlivé informace.",
     "contactMe": "Kontaktujte mě! Mohu sdílet více myšlenek.",
     "submit": "Odeslat"
+  },
+  "notifications": "Oznámení",
+  "today": "Dnes",
+  "tomorrow": "Zítra",
+  "actions": {
+    "decline": "Odmítnout",
+    "joinGroup": "Připojit se",
+    "delete": "Smazat",
+    "confirmAdd": "Potvrdit"
   }
 } 
