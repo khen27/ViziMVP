@@ -11,7 +11,7 @@ import {
   StatusBar,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView,
+  KeyboardAvoidingView,
   AppState,
 } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -67,125 +67,144 @@ export default function TabThreeScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <LinearGradient
-        colors={['#EAF2F9', '#C9DEFC']}
-        style={styles.container}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={styles.safeArea}>
-          <ScrollView 
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-          >
-            <View style={styles.content}>
-              <View style={styles.header}>
-                <Text style={styles.title}>{i18n.t('feedback.title')}</Text>
-                <Text style={styles.subtitle}>
-                  {i18n.t('feedback.subtitle')}
-                </Text>
-              </View>
+      <View style={styles.mainContainer}>
+        <LinearGradient
+          colors={['#7389EC', '#4694FD']}
+          style={StyleSheet.absoluteFill}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+        >
+          <View style={styles.screenContent}>
+            <View style={styles.contentContainer}>
+              <StatusBar barStyle="dark-content" />
+              <SafeAreaView style={styles.safeArea}>
+                <KeyboardAvoidingView 
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  style={styles.keyboardAvoidView}
+                >
+                  <View style={styles.content}>
+                    <View style={styles.header}>
+                      <Text style={styles.title}>{i18n.t('feedback.title')}</Text>
+                      <Text style={styles.subtitle}>
+                        {i18n.t('feedback.subtitle')}
+                      </Text>
+                    </View>
 
-              <EmojiRating 
-                selectedEmoji={selectedEmoji} 
-                onSelect={setSelectedEmoji} 
-              />
+                    <EmojiRating 
+                      selectedEmoji={selectedEmoji} 
+                      onSelect={setSelectedEmoji} 
+                    />
 
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.textInput}
-                  multiline
-                  placeholder={i18n.t('feedback.textInputPlaceholder')}
-                  placeholderTextColor="rgba(0, 0, 0, 0.3)"
-                  value={feedback}
-                  onChangeText={setFeedback}
-                />
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        style={styles.textInput}
+                        multiline
+                        placeholder={i18n.t('feedback.textInputPlaceholder')}
+                        placeholderTextColor="rgba(0, 0, 0, 0.3)"
+                        value={feedback}
+                        onChangeText={setFeedback}
+                      />
 
-                <View style={styles.checkboxContainer}>
-                  <TouchableOpacity
-                    style={styles.checkbox}
-                    onPress={() => setContactMe(!contactMe)}
-                  >
-                    {contactMe && <View style={styles.checkboxInner} />}
-                  </TouchableOpacity>
-                  <Text style={styles.checkboxLabel}>
-                    {i18n.t('feedback.contactMe')}
-                  </Text>
-                </View>
+                      <View style={styles.checkboxContainer}>
+                        <TouchableOpacity
+                          style={styles.checkbox}
+                          onPress={() => setContactMe(!contactMe)}
+                        >
+                          {contactMe && <View style={styles.checkboxInner} />}
+                        </TouchableOpacity>
+                        <Text style={styles.checkboxLabel}>
+                          {i18n.t('feedback.contactMe')}
+                        </Text>
+                      </View>
 
-                <TouchableOpacity style={styles.submitButton}>
-                  <Text style={styles.submitButtonText}>{i18n.t('feedback.submit')}</Text>
-                </TouchableOpacity>
-              </View>
+                      <TouchableOpacity style={styles.submitButton}>
+                        <Text style={styles.submitButtonText}>{i18n.t('feedback.submit')}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </KeyboardAvoidingView>
+              </SafeAreaView>
             </View>
-          </ScrollView>
-        </SafeAreaView>
-      </LinearGradient>
+          </View>
+        </LinearGradient>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     width: '100%',
     height: '100%',
   },
+  screenContent: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  contentContainer: {
+    flex: 1,
+    width: '100%',
+    height: '88%', // Limit height to create space at bottom
+    maxHeight: Platform.OS === 'ios' ? '86%' : '88%', // More space on iOS for home indicator
+    backgroundColor: '#EAF2F9',
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    shadowColor: 'rgba(11, 19, 66, 0.25)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 24,
+    shadowOpacity: 0.5,
+    elevation: 10,
+    overflow: 'hidden',
+  },
   safeArea: {
     flex: 1,
   },
-  scrollView: {
+  keyboardAvoidView: {
     flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 100,
   },
   content: {
     flex: 1,
     alignItems: 'center',
-    padding: 10,
-    paddingTop: 50,
+    padding: 20,
+    paddingTop: 40,
   },
   header: {
-    width: 373,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   title: {
-    width: '100%',
     fontSize: 32,
-    lineHeight: 36,
+    lineHeight: 38,
     fontFamily: 'DMSans-Medium',
     textAlign: 'center',
-    letterSpacing: -0.05 * 32,
+    letterSpacing: -1.6,
     color: '#000000',
     marginBottom: 16,
   },
   subtitle: {
-    width: '100%',
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 22,
     fontFamily: 'DMSans-Regular',
     textAlign: 'center',
-    letterSpacing: -0.015 * 16,
+    letterSpacing: -0.24,
     color: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 24,
   },
   inputContainer: {
-    width: 353,
-    marginTop: 20,
+    width: '100%',
+    marginTop: 30,
   },
   textInput: {
-    height: 278,
+    height: 215,
     backgroundColor: '#FFFFFF',
     borderColor: '#D8D8D8',
     borderWidth: 1,
     borderRadius: 25,
     padding: 20,
-    paddingTop: 15,
+    paddingTop: 16,
     fontFamily: 'DMSans-Regular',
     fontSize: 16,
     color: '#000000',
@@ -194,8 +213,8 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 16,
-    marginBottom: 16,
+    marginTop: 22,
+    marginBottom: 22,
   },
   checkbox: {
     width: 22,
@@ -218,7 +237,7 @@ const styles = StyleSheet.create({
     fontFamily: 'DMSans-Medium',
     fontSize: 16,
     lineHeight: 22,
-    letterSpacing: -0.015 * 16,
+    letterSpacing: -0.24,
     color: '#000000',
   },
   submitButton: {
@@ -228,22 +247,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   submitButtonText: {
     fontFamily: 'DMSans-Medium',
     fontSize: 16,
     lineHeight: 20,
-    letterSpacing: -0.015 * 16,
+    letterSpacing: -0.24,
     color: '#FFFFFF',
-  },
-  homeIndicator: {
-    width: 134,
-    height: 5,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 100,
-    position: 'absolute',
-    bottom: 8,
-    alignSelf: 'center',
   },
 });

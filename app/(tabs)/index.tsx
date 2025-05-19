@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { View } from '@/components/Themed';
 import MapView, {Marker} from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const createMarker = (lon: number, lat: number) => <Marker coordinate={{longitude: lon, latitude: lat}}/>
@@ -14,39 +15,40 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map}
-        initialRegion={{
-          latitude: 25.78,  // Miami
-          longitude: -80.20,
-          latitudeDelta: 0.06,
-          longitudeDelta: 0.035,
+      <LinearGradient
+        colors={['#7389EC', '#4694FD']}
+        style={StyleSheet.absoluteFill}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      />
+      
+      <View style={styles.contentContainer}>
+        <MapView style={styles.map}
+          initialRegion={{
+            latitude: 25.78,  // Miami
+            longitude: -80.20,
+            latitudeDelta: 0.06,
+            longitudeDelta: 0.035,
+          }}>
+            {
+              markers.map(marker => createMarker(marker.lon, marker.lat))
+            }
+        </MapView>
+        <TouchableOpacity style={styles.filterButton}>
+          <Ionicons name="filter" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.plusButton} onPress={() => {
+          Alert.alert("hello");
         }}>
-          {
-            markers.map(marker => createMarker(marker.lon, marker.lat))
-          }
-      </MapView>
-      <TouchableOpacity style={styles.filterButton}>
-        <Ionicons name="filter" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.plusButton} onPress={() => {
-       /* var newMarkers = [
-          ...markers, 
-          {
-            lat: 25.72 + 0.12*Math.random(),
-            lon: -80 + 0.07*Math.random()
-          }
-        ]
-        setMarkers(newMarkers);*/
-        Alert.alert("hello");
-      }}>
-        <Ionicons name="add" size={24} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.searchButton}>
-        <Ionicons name="search" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.locateButton}>
-        <Ionicons name="location" size={24} color="black" />
-      </TouchableOpacity>
+          <Ionicons name="add" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.searchButton}>
+          <Ionicons name="search" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.locateButton}>
+          <Ionicons name="location" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -73,8 +75,19 @@ const secondaryButtonBasicStyle = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 10,
+    margin: 0,
+    position: 'relative',
   },
   title: {
     fontSize: 20,
