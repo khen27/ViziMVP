@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    width: 360,
+    width: 373,
     marginVertical: 25,
   },
   emojiButton: {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-    top: -10,
+    top: 0,
     paddingHorizontal: 10,
   },
   emojiLabelText: {
