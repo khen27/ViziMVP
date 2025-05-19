@@ -104,7 +104,7 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: Platform.OS === 'ios' ? 90 : 80, // Taller height on iOS for home indicator
+    height: 80,
     backgroundColor: 'transparent',
     borderTopWidth: 0,
     elevation: 0,
@@ -113,14 +113,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingTop: 10,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 20, // More bottom padding on iOS
+    paddingTop: 0,
+    paddingBottom: Platform.OS === 'ios' ? 25 : 15,
   },
   tabBarItem: {
     height: 60,
     width: 60,
-    marginHorizontal: 8, // Increased spacing between icons
-    marginTop: 5, // Add top margin to center icons
+    marginHorizontal: 8,
+    // No background color when active/focused
   },
   iconContainer: {
     width: 60,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 100,
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 8 : 8,
+    bottom: 8,
     alignSelf: 'center',
   }
 });

@@ -11,7 +11,7 @@ import {
   StatusBar,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView,
+  ScrollView,
   AppState,
 } from 'react-native';
 import { useFonts } from 'expo-font';
@@ -74,58 +74,59 @@ export default function TabThreeScreen() {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         >
-          <View style={styles.screenContent}>
-            <View style={styles.contentContainer}>
-              <StatusBar barStyle="dark-content" />
-              <SafeAreaView style={styles.safeArea}>
-                <KeyboardAvoidingView 
-                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                  style={styles.keyboardAvoidView}
-                >
-                  <View style={styles.content}>
-                    <View style={styles.header}>
-                      <Text style={styles.title}>{i18n.t('feedback.title')}</Text>
-                      <Text style={styles.subtitle}>
-                        {i18n.t('feedback.subtitle')}
+          <View style={styles.contentContainer}>
+            <StatusBar barStyle="dark-content" />
+            <SafeAreaView style={styles.safeArea}>
+              <ScrollView 
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+              >
+                <View style={styles.content}>
+                  <View style={styles.header}>
+                    <Text style={styles.title}>{i18n.t('feedback.title')}</Text>
+                    <Text style={styles.subtitle}>
+                      {i18n.t('feedback.subtitle')}
+                    </Text>
+                  </View>
+
+                  <EmojiRating 
+                    selectedEmoji={selectedEmoji} 
+                    onSelect={setSelectedEmoji} 
+                  />
+
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.textInput}
+                      multiline
+                      placeholder={i18n.t('feedback.textInputPlaceholder')}
+                      placeholderTextColor="rgba(0, 0, 0, 0.3)"
+                      value={feedback}
+                      onChangeText={setFeedback}
+                    />
+
+                    <View style={styles.checkboxContainer}>
+                      <TouchableOpacity
+                        style={styles.checkbox}
+                        onPress={() => setContactMe(!contactMe)}
+                      >
+                        {contactMe && <View style={styles.checkboxInner} />}
+                      </TouchableOpacity>
+                      <Text style={styles.checkboxLabel}>
+                        {i18n.t('feedback.contactMe')}
                       </Text>
                     </View>
 
-                    <EmojiRating 
-                      selectedEmoji={selectedEmoji} 
-                      onSelect={setSelectedEmoji} 
-                    />
-
-                    <View style={styles.inputContainer}>
-                      <TextInput
-                        style={styles.textInput}
-                        multiline
-                        placeholder={i18n.t('feedback.textInputPlaceholder')}
-                        placeholderTextColor="rgba(0, 0, 0, 0.3)"
-                        value={feedback}
-                        onChangeText={setFeedback}
-                      />
-
-                      <View style={styles.checkboxContainer}>
-                        <TouchableOpacity
-                          style={styles.checkbox}
-                          onPress={() => setContactMe(!contactMe)}
-                        >
-                          {contactMe && <View style={styles.checkboxInner} />}
-                        </TouchableOpacity>
-                        <Text style={styles.checkboxLabel}>
-                          {i18n.t('feedback.contactMe')}
-                        </Text>
-                      </View>
-
-                      <TouchableOpacity style={styles.submitButton}>
-                        <Text style={styles.submitButtonText}>{i18n.t('feedback.submit')}</Text>
-                      </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity style={styles.submitButton}>
+                      <Text style={styles.submitButtonText}>{i18n.t('feedback.submit')}</Text>
+                    </TouchableOpacity>
                   </View>
-                </KeyboardAvoidingView>
-              </SafeAreaView>
-            </View>
+                </View>
+              </ScrollView>
+            </SafeAreaView>
           </View>
+          
+          <View style={styles.homeIndicator} />
         </LinearGradient>
       </View>
     </TouchableWithoutFeedback>
@@ -138,15 +139,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  screenContent: {
-    flex: 1,
-    flexDirection: 'column',
-  },
   contentContainer: {
-    flex: 1,
+    position: 'absolute',
     width: '100%',
-    height: '88%', // Limit height to create space at bottom
-    maxHeight: Platform.OS === 'ios' ? '86%' : '88%', // More space on iOS for home indicator
+    height: '86%', // Adjust to leave room for the tab bar
     backgroundColor: '#EAF2F9',
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
@@ -155,13 +151,16 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     shadowOpacity: 0.5,
     elevation: 10,
-    overflow: 'hidden',
   },
   safeArea: {
     flex: 1,
   },
-  keyboardAvoidView: {
+  scrollView: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 100, // Extra padding to avoid tab bar overlap
   },
   content: {
     flex: 1,
@@ -255,5 +254,14 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     letterSpacing: -0.24,
     color: '#FFFFFF',
+  },
+  homeIndicator: {
+    width: 134,
+    height: 5,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 100,
+    position: 'absolute',
+    bottom: 8,
+    alignSelf: 'center',
   },
 });

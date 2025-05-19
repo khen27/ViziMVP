@@ -7,11 +7,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-const createMarker = (lon: number, lat: number) => <Marker coordinate={{longitude: lon, latitude: lat}}/>
+const createMarker = (lon: number, lat: number, id: string) => (
+  <Marker 
+    key={id}
+    coordinate={{longitude: lon, latitude: lat}}
+  />
+)
 
 export default function TabOneScreen() {
   
-  const [markers, setMarkers] = useState([{ lat: 0, lon: 0 }]);
+  const [markers, setMarkers] = useState([{ id: '1', lat: 0, lon: 0 }]);
 
   return (
     <View style={styles.container}>
@@ -31,7 +36,7 @@ export default function TabOneScreen() {
             longitudeDelta: 0.035,
           }}>
             {
-              markers.map(marker => createMarker(marker.lon, marker.lat))
+              markers.map(marker => createMarker(marker.lon, marker.lat, marker.id))
             }
         </MapView>
         <TouchableOpacity style={styles.filterButton}>

@@ -167,4 +167,15 @@ export const ProfileIcon = ({ color, focused }: TabIconProps) => {
       />
     </Svg>
   );
-}; 
+};
+
+// Default export for the entire module
+const TabBarIcons = {
+  MapIcon,
+  ChatIcon,
+  HelpIcon,
+  NotificationIcon,
+  ProfileIcon
+};
+
+export default TabBarIcons; 
