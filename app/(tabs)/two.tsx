@@ -41,9 +41,9 @@ interface Chat {
 export default function TabTwoScreen() {
   // Featured users at the top
   const users: User[] = [
-    { id: '1', name: 'Jaydon', image: require('../../assets/people/image-1.png') },
-    { id: '2', name: 'Julia', image: require('../../assets/people/image-2.png') },
-    { id: '3', name: 'Mike', image: require('../../assets/people/image-3.png') },
+    { id: '1', name: 'Martin', image: require('../../assets/people/image-1.png') },
+    { id: '2', name: 'Mike', image: require('../../assets/people/image-2.png') },
+    { id: '3', name: 'Julia', image: require('../../assets/people/image-3.png') },
     { id: '4', name: 'Mia', image: require('../../assets/people/image-4.png') },
     { id: '5', name: 'Demi', image: require('../../assets/people/image-5.png') },
     { id: '6', name: 'Brian', image: require('../../assets/people/image.png') },
@@ -110,11 +110,11 @@ export default function TabTwoScreen() {
     },
     {
       id: '6',
-      title: 'Brian Cofield',
-      image: require('../../assets/brian.png'),
+      title: 'Martin Pokorný',
+      image: require('../../assets/people/image-1.png'),
       lastMessage: {
         id: 'm6',
-        text: 'Olivia is typing...',
+        text: 'Ahoj, kde jsi?',
         timestamp: 'Tue',
         unreadCount: 5
       }
@@ -266,13 +266,10 @@ export default function TabTwoScreen() {
                 {renderChatItem({item: chat})}
               </TouchableOpacity>
             ))}
-            
-            {/* Gradient fade at the bottom */}
-            <View style={styles.gradientOverlay} />
           </ScrollView>
         </View>
         
-        {/* Bottom navigation bar - will be hidden by tab navigator */}
+        {/* Bottom navigation bar - now inside the white background */}
         <View style={styles.navigationBar}>
           <TouchableOpacity style={styles.navItem}>
             <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -390,7 +387,6 @@ export default function TabTwoScreen() {
             </Svg>
           </TouchableOpacity>
         </View>
-        
         {/* Home indicator line */}
         <View style={styles.homeIndicator} />
       </LinearGradient>
@@ -407,7 +403,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     position: 'absolute',
     width: '100%',
-    height: '86%', // Adjust to leave room for the tab bar
+    flex: 1, // Fill the whole screen
     backgroundColor: '#EAF2F9',
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
@@ -484,7 +480,7 @@ const styles = StyleSheet.create({
   },
   chatListHeader: {
     paddingHorizontal: 20,
-    marginTop: 220,
+    marginTop: 12,
   },
   chatListHeaderText: {
     fontFamily: 'DMSans-Medium',
@@ -631,11 +627,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 343,
+    alignItems: 'center',
+    width: '100%',
     height: 60,
-    left: '50%',
-    marginLeft: -343/2,
+    paddingHorizontal: 24,
+    gap: 24,
     bottom: 35,
+    left: 0,
   },
   navItem: {
     width: 60,
