@@ -1,5 +1,4 @@
 import { StyleSheet, TouchableOpacity, Alert, ViewStyle, Image, Platform, View as RNView } from 'react-native';
-
 import React, { useState } from 'react';
 import type { Region } from 'react-native-maps';
 import { View } from '@/components/Themed';
@@ -8,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
 
 // Import icons
 const filterIcon = require('../../assets/icons/icon-filter.png');
@@ -47,11 +47,12 @@ export default function TabOneScreen() {
 
   // Calculate proper map height
   const navBarHeight = 80;
-  const mapHeight = screenHeight - navBarHeight;
+  const mapBottomMargin = 35; // Space between map and navbar
+  const mapHeight = screenHeight - navBarHeight - mapBottomMargin;
 
   return (
     <View style={styles.container}>
-      {/* Background gradient */}
+      {/* Background gradient - fills the screen */}
       <LinearGradient
         colors={['#836CE8', '#4694FD']}
         style={StyleSheet.absoluteFill}
@@ -59,19 +60,22 @@ export default function TabOneScreen() {
         end={{ x: 1, y: 0.5 }}
       />
       
-      {/* Bottom transition gradient - positioned to be visible in rounded corners */}
+      {/* Transition gradient - specifically positioned for visual continuity */}
       <LinearGradient
-        colors={['#6B82EA', '#4694FD']}
-        style={styles.bottomGradient}
+        colors={['#7389EC', '#4694FD']}
+        style={styles.navbarTransitionGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
       />
+
+      {/* Semi-transparent decorative elements to enhance the transition */}
+      <RNView style={styles.leftCornerAccent} />
+      <RNView style={styles.rightCornerAccent} />
       
       {/* Main layout container */}
       <RNView style={styles.mainContainer}>
         {/* White rounded container for map */}
         <RNView style={[styles.mapContainer, { height: mapHeight }]}>
-          {/* The actual map */}
           <MapView
             style={styles.map}
             initialRegion={region}
@@ -125,14 +129,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
-  bottomGradient: {
-    position: 'absolute',
-    height: 180,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1,
-  },
   mapContainer: {
     width: '100%',
     backgroundColor: 'white',
@@ -140,15 +136,44 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 32,
     overflow: 'hidden',
     shadowColor: 'rgba(11, 19, 66, 0.3)',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.5,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
     zIndex: 2,
   },
   map: {
     width: '100%',
     height: '100%',
+  },
+  navbarTransitionGradient: {
+    position: 'absolute',
+    height: 130,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+  },
+  // Decorative elements to enhance the transition
+  leftCornerAccent: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    left: 16,
+    bottom: 105, // Fixed value for navBarHeight + 25
+    backgroundColor: 'rgba(115, 137, 236, 0.25)',
+    borderRadius: 25,
+    zIndex: 2,
+  },
+  rightCornerAccent: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    right: 20,
+    bottom: 95, // Fixed value for navBarHeight + 15
+    backgroundColor: 'rgba(70, 148, 253, 0.15)',
+    borderRadius: 30,
+    zIndex: 2,
   },
   bottomRightButtons: {
     position: 'absolute',
