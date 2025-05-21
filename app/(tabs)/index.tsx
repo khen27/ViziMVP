@@ -1,13 +1,19 @@
-import { StyleSheet, TouchableOpacity, Alert, ViewStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity, Alert, ViewStyle, Image } from 'react-native';
 
 import React, { useState } from 'react';
 import type { Region } from 'react-native-maps';
 import { View } from '@/components/Themed';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Dimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-
+// Import icons
+const filterIcon = require('../../assets/icons/icon-filter.png');
+const searchIcon = require('../../assets/icons/icon-search.png');
+const addIcon = require('../../assets/icons/icon-add.png');
+const locateIcon = require('../../assets/icons/icon-locate.png');
 
 const createMarker = (lon: number, lat: number, id: string) => (
   <Marker 
@@ -36,6 +42,8 @@ export default function TabOneScreen() {
     return { lat, lon };
   }
 
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -47,56 +55,47 @@ export default function TabOneScreen() {
       
       <View style={styles.contentContainer}>
         <MapView
-          style={styles.map}
+          style={StyleSheet.absoluteFillObject}
           initialRegion={region}
           onRegionChangeComplete={setRegion}
         >
           {markers.map(marker => createMarker(marker.lon, marker.lat, marker.id))}
         </MapView>
-        <TouchableOpacity style={styles.filterButton}>
-          <Ionicons name="filter" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.plusButton}
-          onPress={() => {
-            const { lat, lon } = getRandomLatLng(region);
-            setMarkers(prev => [
-              ...prev,
-              { id: Date.now().toString(), lat, lon }
-            ]);
-          }}
-        >
-          <Ionicons name="add" size={24} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.searchButton}>
-          <Ionicons name="search" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.locateButton}>
-          <Ionicons name="location" size={24} color="black" />
-        </TouchableOpacity>
+        
+        {/* Bottom right buttons */}
+        <View style={styles.bottomRightButtons}>
+          <TouchableOpacity
+            style={styles.blueButton}
+            onPress={() => {
+              const { lat, lon } = getRandomLatLng(region);
+              setMarkers(prev => [
+                ...prev,
+                { id: Date.now().toString(), lat, lon }
+              ]);
+            }}
+          >
+            <Image source={addIcon} style={styles.iconImage} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.whiteButton}>
+            <Image source={locateIcon} style={styles.iconImage} />
+          </TouchableOpacity>
+        </View>
+        
+        {/* Bottom left buttons */}
+        <View style={styles.bottomLeftButtons}>
+          <TouchableOpacity style={styles.whiteButton}>
+            <Image source={filterIcon} style={styles.iconImage} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.whiteButton}>
+            <Image source={searchIcon} style={styles.iconImage} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 }
-
-const buttonBasicStyle: any = { // any - temporary hack here
-  position: 'absolute',
-  padding: 14,
-  borderRadius: 28,
-  elevation: 5, // Android shadow
-  shadowColor: '#000', // iOS shadow
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.3,
-  shadowRadius: 4,
-};
-const primaryButtonBasicStyle = {
-  ...buttonBasicStyle,
-  backgroundColor: '#1E3A8A',
-};
-const secondaryButtonBasicStyle = {
-  ...buttonBasicStyle,
-  backgroundColor: 'white',
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -125,28 +124,69 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   map: {
-    width: '100%',
-    height: '100%',
+    position: 'absolute',
+    width: 393,
+    height: 735,
+    left: 0,
+    top: 0,
+    backgroundColor: '#FFFFFF',
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    shadowColor: 'rgba(11, 19, 66, 0.5)',
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 100,
+    shadowOpacity: 0.5,
+    elevation: 10,
   },
-  filterButton: {
-    ...secondaryButtonBasicStyle,
-    bottom: 120,
-    left: 20,
+  bottomRightButtons: {
+    position: 'absolute',
+    right: 16,
+    bottom: 90,
+    flexDirection: 'column',
+    gap: 10,
+    zIndex: 10,
+    alignItems: 'flex-end',
+    backgroundColor: 'transparent',
   },
-  plusButton: {
-    ...primaryButtonBasicStyle,
-    bottom:120,
-    right: 20,
+  bottomLeftButtons: {
+    position: 'absolute',
+    left: 16,
+    bottom: 90,
+    flexDirection: 'column',
+    gap: 10, 
+    zIndex: 10,
+    backgroundColor: 'transparent',
   },
-  searchButton: {
-    ...secondaryButtonBasicStyle,
-    bottom: 30,
-    left: 20,
+  whiteButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(9, 65, 115, 0.2)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+    elevation: 8,
   },
-  locateButton: {
-    ...secondaryButtonBasicStyle,
-    bottom: 30,
-    right: 20,
+  blueButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#0B228C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(9, 65, 115, 0.2)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  iconImage: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
 });
 
