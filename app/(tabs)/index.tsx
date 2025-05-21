@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
+import Toast from '../components/Toast';
 
 // Import icons
 const filterIcon = require('../../assets/icons/icon-filter.png');
@@ -15,6 +16,7 @@ const filterIconPressed = require('../../assets/icons/icon-filter-pressed.png');
 const searchIcon = require('../../assets/icons/icon-search.png');
 const addIcon = require('../../assets/icons/icon-add.png');
 const locateIcon = require('../../assets/icons/icon-locate.png');
+const infoToastIcon = require('../../assets/icons/icon-toast-information.png');
 
 const createMarker = (lon: number, lat: number, id: string) => (
   <Marker 
@@ -77,8 +79,23 @@ export default function TabOneScreen() {
   const mapBottomMargin = 35; // Space between map and navbar
   const mapHeight = screenHeight - navBarHeight - mapBottomMargin;
 
+  const [toastVisible, setToastVisible] = useState(false);
+
   return (
     <View style={styles.container}>
+      {/* Toast notification */}
+      <Toast
+        visible={toastVisible}
+        onHide={() => setToastVisible(false)}
+        message="Search is coming soon!"
+        icon={<Image source={infoToastIcon} style={{ width: 20, height: 20 }} resizeMode="contain" />}
+        backgroundColor="#FFFFFF"
+        borderColor="rgba(139, 92, 246, 0.2)"
+        shadowColor="rgba(248, 92, 58, 0.1)"
+        textColor="#000"
+        duration={2500}
+        topOffset={insets.top}
+      />
       {/* Background gradient - fills the screen */}
       <LinearGradient
         colors={['#836CE8', '#4694FD']}
@@ -148,7 +165,10 @@ export default function TabOneScreen() {
             />
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.whiteButton}>
+          <TouchableOpacity 
+            style={styles.whiteButton}
+            onPress={() => setToastVisible(true)}
+          >
             <Image source={searchIcon} style={styles.iconImage} />
           </TouchableOpacity>
         </View>
