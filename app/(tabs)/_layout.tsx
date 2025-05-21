@@ -8,8 +8,17 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { MapIcon, ChatIcon, HelpIcon, NotificationIcon, ProfileIcon } from '@/app/components/TabBarIcons';
 
-// Get screen dimensions
-const { width } = Dimensions.get('window');
+// Get screen dimensions for precise positioning
+const { width: screenWidth } = Dimensions.get('window');
+
+// Calculate positions for each icon
+const iconPositions = {
+  firstIcon: screenWidth * 0.1,
+  secondIcon: screenWidth * 0.3,
+  thirdIcon: screenWidth * 0.5,
+  fourthIcon: screenWidth * 0.7,
+  fifthIcon: screenWidth * 0.9,
+};
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -37,55 +46,65 @@ export default function TabLayout() {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         />
-        <View style={styles.homeIndicator} />
         
-        <View style={styles.iconsContainer}>
-          {state.routes.map((route: any, index: number) => {
-            const { options } = descriptors[route.key];
-            const isFocused = state.index === index;
-            
-            const onPress = () => {
-              const event = navigation.emit({
-                type: 'tabPress',
-                target: route.key,
-                canPreventDefault: true,
-              });
+        {state.routes.map((route: any, index: number) => {
+          const { options } = descriptors[route.key];
+          const isFocused = state.index === index;
+          
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
 
-              if (!isFocused && !event.defaultPrevented) {
-                navigation.navigate(route.name);
-              }
-            };
-
-            // Custom icon rendering based on route name
-            let icon;
-            const color = isFocused ? '#FFFFFF' : '#90C2FF';
-            
-            if (route.name === 'index') {
-              icon = <MapIcon color={color} focused={isFocused} />;
-            } else if (route.name === 'two') {
-              icon = <ChatIcon color={color} focused={isFocused} />;
-            } else if (route.name === 'three') {
-              icon = <HelpIcon color={color} focused={isFocused} />;
-            } else if (route.name === 'four') {
-              icon = <NotificationIcon color={color} focused={isFocused} />;
-            } else if (route.name === 'five') {
-              icon = <ProfileIcon color={color} focused={isFocused} />;
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
             }
+          };
 
-            return (
-              <Pressable
-                key={index}
-                style={styles.tabButton}
-                onPress={onPress}
-                accessibilityRole="button"
-                accessibilityState={isFocused ? { selected: true } : {}}
-                accessibilityLabel={options.tabBarAccessibilityLabel}
-              >
-                {icon}
-              </Pressable>
-            );
-          })}
-        </View>
+          // Get the correct position based on index
+          const iconPosition = index === 0 ? iconPositions.firstIcon : 
+                              index === 1 ? iconPositions.secondIcon :
+                              index === 2 ? iconPositions.thirdIcon :
+                              index === 3 ? iconPositions.fourthIcon :
+                              iconPositions.fifthIcon;
+          
+          // Custom icon rendering based on route name
+          let icon;
+          const color = isFocused ? '#FFFFFF' : '#90C2FF';
+          
+          if (route.name === 'index') {
+            icon = <MapIcon color={color} focused={isFocused} />;
+          } else if (route.name === 'two') {
+            icon = <ChatIcon color={color} focused={isFocused} />;
+          } else if (route.name === 'three') {
+            icon = <HelpIcon color={color} focused={isFocused} />;
+          } else if (route.name === 'four') {
+            icon = <NotificationIcon color={color} focused={isFocused} />;
+          } else if (route.name === 'five') {
+            icon = <ProfileIcon color={color} focused={isFocused} />;
+          }
+
+          return (
+            <Pressable
+              key={index}
+              style={[
+                styles.tabButton,
+                {
+                  position: 'absolute',
+                  left: iconPosition - 30, // Center the 60px wide button on the position
+                }
+              ]}
+              onPress={onPress}
+              accessibilityRole="button"
+              accessibilityState={isFocused ? { selected: true } : {}}
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+            >
+              {icon}
+            </Pressable>
+          );
+        })}
       </View>
     );
   }
@@ -111,32 +130,18 @@ const styles = StyleSheet.create({
     height: 80,
     backgroundColor: 'transparent',
     position: 'absolute',
-    bottom: 0,
+    bottom: 10, // Keep navbar raised
     left: 0,
     right: 0,
     borderTopWidth: 0,
     elevation: 0,
     shadowOpacity: 0,
   },
-  iconsContainer: {
-    flexDirection: 'row',
-    height: '100%',
-    paddingBottom: Platform.OS === 'ios' ? 25 : 15,
-    paddingTop: 5,
-  },
   tabButton: {
-    flex: 1,
+    width: 60,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  homeIndicator: {
-    width: 134,
-    height: 5,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 100,
-    position: 'absolute',
-    bottom: 8,
-    alignSelf: 'center',
-    zIndex: 1,
+    paddingBottom: 5,
   }
 });
