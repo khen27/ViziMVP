@@ -1,86 +1,119 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
+import * as Font from 'expo-font';
 
 const { width } = Dimensions.get('window');
 
-// Keep the splash screen visible while we fetch resources
+// Keep splash screen visible until explicitly hidden
 SplashScreen.preventAutoHideAsync();
 
 export default function OnboardingStepTwo() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  // Load fonts
   const [fontsLoaded] = useFonts({
     'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf'),
     'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
   });
 
+  // Prepare the app - load all resources
   React.useEffect(() => {
-    if (fontsLoaded) {
-      // Hide splash screen once fonts are loaded
-      SplashScreen.hideAsync();
+    async function prepare() {
+      try {
+        // Pre-load fonts, make any API calls you need to do here
+        await Font.loadAsync({
+          'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf'),
+          'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
+        });
+        
+        // Artificially delay for a smoother transition
+        await new Promise(resolve => setTimeout(resolve, 50));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell app that we're ready
+        setAppIsReady(true);
+      }
     }
-  }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
+    prepare();
+  }, []);
+
+  // Callback to hide splash screen
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady && fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady, fontsLoaded]);
+
+  // Don't show anything until everything is ready
+  if (!appIsReady || !fontsLoaded) {
     return null;
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <MaskedView
-          style={styles.titleContainer}
-          maskElement={
-            <Text style={styles.title}>Vizi</Text>
-          }
-        >
-          <LinearGradient
-            colors={['#836CE8', '#4694FD']}
-            style={styles.titleGradient}
-            start={{ x: 0, y: -3.25 }}
-            end={{ x: 0, y: 3 }}
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+        <View style={styles.content}>
+          <View style={styles.titleWrapper}>
+            <MaskedView
+              style={styles.titleContainer}
+              maskElement={
+                <Text style={styles.title}>Vizi</Text>
+              }
+            >
+              <LinearGradient
+                colors={['#836CE8', '#4694FD']}
+                style={styles.titleGradient}
+                start={{ x: 0, y: -3.25 }}
+                end={{ x: 0, y: 3 }}
+              />
+            </MaskedView>
+          </View>
+
+          <Image 
+            source={require('../assets/world-map.png')}
+            style={styles.mapImage}
+            resizeMode="contain"
           />
-        </MaskedView>
 
-        <Image 
-          source={require('../assets/world-map.png')}
-          style={styles.mapImage}
-          resizeMode="contain"
-        />
+          <View style={styles.textFrame}>
+            <Text style={styles.mainText}>Real-Time World{'\n'}Group Chats</Text>
+            <Text style={styles.subText}>
+              Connect instantly with nearby people, join{'\n'}live chats, and explore local gems.
+            </Text>
+          </View>
 
-        <View style={styles.textFrame}>
-          <Text style={styles.mainText}>Real-Time World{'\n'}Group Chats</Text>
-          <Text style={styles.subText}>
-            Connect instantly with nearby people, join{'\n'}live chats, and explore local gems.
-          </Text>
+          <View style={styles.dotsContainer}>
+            <View style={[styles.dot, styles.dotInactive]} />
+            <View style={[styles.dot, styles.dotActive]} />
+            <View style={[styles.dot, styles.dotInactive]} />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity 
+              style={styles.skipButton}
+              onPress={() => router.push('/(tabs)')}
+            >
+              <Text style={styles.skipText}>Skip</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.continueButton}
+              onPress={() => router.push('/sign-in')}
+            >
+              <Text style={styles.continueText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <View style={styles.dotsContainer}>
-          <View style={[styles.dot, styles.dotInactive]} />
-          <View style={[styles.dot, styles.dotActive]} />
-          <View style={[styles.dot, styles.dotInactive]} />
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={styles.skipButton}
-            onPress={() => router.push('/(tabs)')}
-          >
-            <Text style={styles.skipText}>Skip</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.continueButton}
-            onPress={() => router.push('/sign-in')}
-          >
-            <Text style={styles.continueText}>Continue</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -93,19 +126,31 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingTop: 30,
+  },
+  titleWrapper: {
+    width: '100%',
+    height: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    paddingVertical: 10,
+    overflow: 'visible',
   },
   titleContainer: {
-    height: 52,
+    height: 60,
     width: 373,
     maxWidth: '100%',
-    marginTop: 20,
+    paddingVertical: 5,
   },
   title: {
     fontFamily: 'Pacifico',
     fontSize: 42,
-    lineHeight: 52,
+    lineHeight: 60,
     textAlign: 'center',
     letterSpacing: 4.2,
+    paddingHorizontal: 10,
+    includeFontPadding: true,
   },
   titleGradient: {
     flex: 1,

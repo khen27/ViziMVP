@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
@@ -6,23 +6,65 @@ import { useFonts } from 'expo-font';
 import { DMSans_400Regular, DMSans_500Medium } from '@expo-google-fonts/dm-sans';
 import { Pacifico_400Regular } from '@expo-google-fonts/pacifico';
 import { router, Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import * as Font from 'expo-font';
 
 const { width, height } = Dimensions.get('window');
 
+// Prevent auto-hiding splash screen
+SplashScreen.preventAutoHideAsync();
+
 export default function SignInScreen() {
   const insets = useSafeAreaInsets();
+  const [appIsReady, setAppIsReady] = useState(false);
+  
+  // Load fonts
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_500Medium,
     Pacifico_400Regular,
   });
 
-  if (!fontsLoaded) return null;
+  // Prepare the app - load all resources
+  React.useEffect(() => {
+    async function prepare() {
+      try {
+        // Pre-load fonts, make any API calls you need to do here
+        await Font.loadAsync({
+          DMSans_400Regular,
+          DMSans_500Medium,
+          Pacifico_400Regular,
+        });
+        
+        // Artificially delay for a smoother transition
+        await new Promise(resolve => setTimeout(resolve, 50));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell app that we're ready
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  // Callback to hide splash screen
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady && fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady, fontsLoaded]);
+
+  // Don't show anything until everything is ready
+  if (!appIsReady || !fontsLoaded) {
+    return null;
+  }
 
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
         <View style={styles.content}>
           {/* Simpler approach for Vizi logo */}
           <View style={styles.logoContainer}>
