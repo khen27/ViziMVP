@@ -1,10 +1,12 @@
 import { StyleSheet, TouchableOpacity, Alert, ViewStyle } from 'react-native';
 
 import React, { useState } from 'react';
+import type { Region } from 'react-native-maps';
 import { View } from '@/components/Themed';
 import MapView, {Marker} from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 
 const createMarker = (lon: number, lat: number, id: string) => (
@@ -15,8 +17,24 @@ const createMarker = (lon: number, lat: number, id: string) => (
 )
 
 export default function TabOneScreen() {
-  
+  // Track region
+  const [region, setRegion] = useState({
+    latitude: 25.78,  // Miami
+    longitude: -80.20,
+    latitudeDelta: 0.06,
+    longitudeDelta: 0.035,
+  });
+
+  // Markers state
   const [markers, setMarkers] = useState([{ id: '1', lat: 0, lon: 0 }]);
+
+  // Helper to generate random lat/lng inside region
+  function getRandomLatLng(region: Region) {
+    const { latitude, longitude, latitudeDelta, longitudeDelta } = region;
+    const lat = latitude + (Math.random() - 0.5) * latitudeDelta;
+    const lon = longitude + (Math.random() - 0.5) * longitudeDelta;
+    return { lat, lon };
+  }
 
   return (
     <View style={styles.container}>
@@ -28,23 +46,26 @@ export default function TabOneScreen() {
       />
       
       <View style={styles.contentContainer}>
-        <MapView style={styles.map}
-          initialRegion={{
-            latitude: 25.78,  // Miami
-            longitude: -80.20,
-            latitudeDelta: 0.06,
-            longitudeDelta: 0.035,
-          }}>
-            {
-              markers.map(marker => createMarker(marker.lon, marker.lat, marker.id))
-            }
+        <MapView
+          style={styles.map}
+          initialRegion={region}
+          onRegionChangeComplete={setRegion}
+        >
+          {markers.map(marker => createMarker(marker.lon, marker.lat, marker.id))}
         </MapView>
         <TouchableOpacity style={styles.filterButton}>
           <Ionicons name="filter" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.plusButton} onPress={() => {
-          Alert.alert("hello");
-        }}>
+        <TouchableOpacity
+          style={styles.plusButton}
+          onPress={() => {
+            const { lat, lon } = getRandomLatLng(region);
+            setMarkers(prev => [
+              ...prev,
+              { id: Date.now().toString(), lat, lon }
+            ]);
+          }}
+        >
           <Ionicons name="add" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.searchButton}>
