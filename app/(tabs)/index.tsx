@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, Alert, ViewStyle, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, Alert, ViewStyle, Image, Platform, View as RNView } from 'react-native';
 
 import React, { useState } from 'react';
 import type { Region } from 'react-native-maps';
@@ -43,24 +43,43 @@ export default function TabOneScreen() {
   }
 
   const insets = useSafeAreaInsets();
+  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+  // Calculate proper map height
+  const navBarHeight = 80;
+  const mapHeight = screenHeight - navBarHeight;
 
   return (
     <View style={styles.container}>
+      {/* Background gradient */}
       <LinearGradient
-        colors={['#7389EC', '#4694FD']}
+        colors={['#836CE8', '#4694FD']}
         style={StyleSheet.absoluteFill}
+        start={{ x: 0.2, y: 0.8 }}
+        end={{ x: 1, y: 0.5 }}
+      />
+      
+      {/* Bottom transition gradient - positioned to be visible in rounded corners */}
+      <LinearGradient
+        colors={['#6B82EA', '#4694FD']}
+        style={styles.bottomGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
       />
       
-      <View style={styles.contentContainer}>
-        <MapView
-          style={StyleSheet.absoluteFillObject}
-          initialRegion={region}
-          onRegionChangeComplete={setRegion}
-        >
-          {markers.map(marker => createMarker(marker.lon, marker.lat, marker.id))}
-        </MapView>
+      {/* Main layout container */}
+      <RNView style={styles.mainContainer}>
+        {/* White rounded container for map */}
+        <RNView style={[styles.mapContainer, { height: mapHeight }]}>
+          {/* The actual map */}
+          <MapView
+            style={styles.map}
+            initialRegion={region}
+            onRegionChangeComplete={setRegion}
+          >
+            {markers.map(marker => createMarker(marker.lon, marker.lat, marker.id))}
+          </MapView>
+        </RNView>
         
         {/* Bottom right buttons */}
         <View style={styles.bottomRightButtons}>
@@ -92,7 +111,7 @@ export default function TabOneScreen() {
             <Image source={searchIcon} style={styles.iconImage} />
           </TouchableOpacity>
         </View>
-      </View>
+      </RNView>
     </View>
   );
 }
@@ -101,47 +120,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  contentContainer: {
+  mainContainer: {
     flex: 1,
+    alignItems: 'center',
+    position: 'relative',
+  },
+  bottomGradient: {
+    position: 'absolute',
+    height: 180,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+  },
+  mapContainer: {
+    width: '100%',
+    backgroundColor: 'white',
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+    shadowColor: 'rgba(11, 19, 66, 0.3)',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
     elevation: 10,
-    margin: 0,
-    position: 'relative',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+    zIndex: 2,
   },
   map: {
-    position: 'absolute',
-    width: 393,
-    height: 735,
-    left: 0,
-    top: 0,
-    backgroundColor: '#FFFFFF',
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
-    shadowColor: 'rgba(11, 19, 66, 0.5)',
-    shadowOffset: { width: 0, height: 8 },
-    shadowRadius: 100,
-    shadowOpacity: 0.5,
-    elevation: 10,
+    width: '100%',
+    height: '100%',
   },
   bottomRightButtons: {
     position: 'absolute',
-    right: 16,
-    bottom: 90,
+    right: 10,
+    bottom: 130,
     flexDirection: 'column',
     gap: 10,
     zIndex: 10,
@@ -150,8 +162,8 @@ const styles = StyleSheet.create({
   },
   bottomLeftButtons: {
     position: 'absolute',
-    left: 16,
-    bottom: 90,
+    left: 10,
+    bottom: 130,
     flexDirection: 'column',
     gap: 10, 
     zIndex: 10,
@@ -160,7 +172,7 @@ const styles = StyleSheet.create({
   whiteButton: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 50,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -173,7 +185,7 @@ const styles = StyleSheet.create({
   blueButton: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 50,
     backgroundColor: '#0B228C',
     justifyContent: 'center',
     alignItems: 'center',
@@ -184,8 +196,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   iconImage: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
     resizeMode: 'contain',
   },
 });
