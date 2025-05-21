@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, Alert, ViewStyle, Image, Platform, View as RNView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import type { Region } from 'react-native-maps';
 import { View } from '@/components/Themed';
 import MapView, { Marker } from 'react-native-maps';
@@ -24,6 +24,9 @@ const createMarker = (lon: number, lat: number, id: string) => (
 )
 
 export default function TabOneScreen() {
+  // Add map ref
+  const mapRef = useRef<MapView>(null);
+
   // Track region
   const [region, setRegion] = useState({
     latitude: 25.78,  // Miami
@@ -31,6 +34,14 @@ export default function TabOneScreen() {
     latitudeDelta: 0.06,
     longitudeDelta: 0.035,
   });
+
+  // Store original coordinates
+  const originalCoordinates = {
+    latitude: 25.78,  // Miami
+    longitude: -80.20,
+    latitudeDelta: 0.06,
+    longitudeDelta: 0.035,
+  };
 
   // Markers state
   const [markers, setMarkers] = useState([{ id: '1', lat: 0, lon: 0 }]);
@@ -41,6 +52,13 @@ export default function TabOneScreen() {
   // Toggle filter state
   const toggleFilter = () => {
     setFilterPressed(!filterPressed);
+  };
+
+  // Handle locate button press
+  const handleLocatePress = () => {
+    if (mapRef.current) {
+      mapRef.current.animateToRegion(originalCoordinates, 1000);
+    }
   };
 
   // Helper to generate random lat/lng inside region
@@ -86,6 +104,7 @@ export default function TabOneScreen() {
         {/* White rounded container for map */}
         <RNView style={[styles.mapContainer, { height: mapHeight }]}>
           <MapView
+            ref={mapRef}
             style={styles.map}
             initialRegion={region}
             onRegionChangeComplete={setRegion}
@@ -109,7 +128,10 @@ export default function TabOneScreen() {
             <Image source={addIcon} style={styles.iconImage} />
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.whiteButton}>
+          <TouchableOpacity 
+            style={styles.whiteButton}
+            onPress={handleLocatePress}
+          >
             <Image source={locateIcon} style={styles.iconImage} />
           </TouchableOpacity>
         </View>
