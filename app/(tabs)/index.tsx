@@ -11,6 +11,7 @@ import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-nati
 
 // Import icons
 const filterIcon = require('../../assets/icons/icon-filter.png');
+const filterIconPressed = require('../../assets/icons/icon-filter-pressed.png');
 const searchIcon = require('../../assets/icons/icon-search.png');
 const addIcon = require('../../assets/icons/icon-add.png');
 const locateIcon = require('../../assets/icons/icon-locate.png');
@@ -33,6 +34,14 @@ export default function TabOneScreen() {
 
   // Markers state
   const [markers, setMarkers] = useState([{ id: '1', lat: 0, lon: 0 }]);
+  
+  // Filter button state
+  const [filterPressed, setFilterPressed] = useState(false);
+
+  // Toggle filter state
+  const toggleFilter = () => {
+    setFilterPressed(!filterPressed);
+  };
 
   // Helper to generate random lat/lng inside region
   function getRandomLatLng(region: Region) {
@@ -107,8 +116,14 @@ export default function TabOneScreen() {
         
         {/* Bottom left buttons */}
         <View style={styles.bottomLeftButtons}>
-          <TouchableOpacity style={styles.whiteButton}>
-            <Image source={filterIcon} style={styles.iconImage} />
+          <TouchableOpacity 
+            style={filterPressed ? styles.blueFilterButton : styles.whiteButton}
+            onPress={toggleFilter}
+          >
+            <Image 
+              source={filterPressed ? filterIconPressed : filterIcon} 
+              style={styles.iconImage} 
+            />
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.whiteButton}>
@@ -212,6 +227,19 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 50,
     backgroundColor: '#0B228C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(9, 65, 115, 0.2)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  blueFilterButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: '#4694FD',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: 'rgba(9, 65, 115, 0.2)',
