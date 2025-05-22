@@ -11,6 +11,7 @@ import {
   ImageBackground,
   FlatList,
   Platform,
+  Image as RNImage,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, Rect } from 'react-native-svg';
@@ -190,7 +191,14 @@ export default function TabTwoScreen() {
   const renderUser = ({item}: {item: User}) => (
     <TouchableOpacity 
       style={styles.userContainer}
-      onPress={() => handleChatPress(item.id)}
+      onPress={() => router.push({
+        pathname: `/chat/${item.id}`,
+        params: {
+          isIndividual: 'true',
+          name: item.name,
+          image: RNImage.resolveAssetSource(item.image).uri,
+        }
+      })}
     >
       <View style={styles.userAvatarContainer}>
         <Image source={item.image} style={styles.userAvatar} />

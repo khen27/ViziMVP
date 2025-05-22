@@ -21,13 +21,43 @@ import { getWidgetImageByIndex } from '../utils/imageUtils';
 // Border colors matching GroupChatMarker in other components
 const BORDER_COLORS = ['#FFA300', '#4694FD', '#ED5370'];
 
+// Add types for clarity
+interface ChatMessage {
+  id: string;
+  text: string;
+  sender?: string;
+  timestamp: string;
+  senderImage?: any;
+  isMine: boolean;
+  reactions?: { emoji: string; count: number }[];
+}
+interface Participant {
+  name: string;
+  image: any;
+}
+
 export default function ChatScreen() {
-  const { id } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  const { id, isIndividual, name, image } = params;
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [inputText, setInputText] = useState('');
   const { chatMarkers } = useContext(ChatDataContext);
   
+  // Individual chat mode
+  const isIndividualChat = isIndividual === 'true';
+  const personName = isIndividualChat ? name : undefined;
+  let personImage: any = undefined;
+  if (isIndividualChat) {
+    if (typeof image === 'string') {
+      personImage = { uri: image };
+    } else if (typeof image === 'number') {
+      personImage = image;
+    } else if (image && typeof image === 'object' && !Array.isArray(image) && 'uri' in image) {
+      personImage = { uri: (image as { uri: string }).uri };
+    }
+  }
+
   // Find the chat marker with matching ID
   const chatMarker = chatMarkers.find(marker => marker.id === id);
   
@@ -53,51 +83,71 @@ export default function ChatScreen() {
     return '#ED5370';
   };
   
-  const [messages, setMessages] = useState([
-    {
-      id: '1',
-      text: 'Hey everyone! Looking forward to our beach brunch this weekend!',
-      sender: 'Martin',
-      timestamp: '10:30 AM',
-      senderImage: require('../../assets/people/image-1.png'),
-      isMine: false,
-    },
-    {
-      id: '2',
-      text: 'Me too! Should I bring anything?',
-      sender: 'Julia',
-      timestamp: '10:35 AM',
-      senderImage: require('../../assets/people/image-3.png'),
-      isMine: false,
-    },
-    {
-      id: '3',
-      text: 'Just bring yourself! I\'ll handle the food.',
-      sender: 'Martin',
-      timestamp: '10:40 AM',
-      senderImage: require('../../assets/people/image-1.png'),
-      isMine: false,
-    },
-    {
-      id: '4',
-      text: 'I will if the weather is sunny. Yesterday, at sunrise, there were some great 🔥🔥 photos.',
-      timestamp: '11:10 AM',
-      senderImage: require('../../assets/people/image-2.png'),
-      isMine: true,
-      reactions: [
-        { emoji: '😍', count: 4 },
-        { emoji: '😢', count: 2 },
-      ]
-    },
-    {
-      id: '5',
-      text: 'Super! Is there another photo showing manatees and 🐬 dolphins? I want to show my friends.',
-      sender: 'Julia',
-      timestamp: '11:14 AM',
-      senderImage: require('../../assets/people/image-3.png'),
-      isMine: false,
-    },
-  ]);
+  // For individual chat, use only two participants: you and the person
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    isIndividualChat
+      ? [
+          {
+            id: '1',
+            text: 'Hi! How are you?',
+            sender: personName as string,
+            timestamp: '10:30 AM',
+            senderImage: personImage,
+            isMine: false,
+            reactions: [],
+          },
+        ]
+      : [
+          {
+            id: '1',
+            text: 'Hey everyone! Looking forward to our beach brunch this weekend!',
+            sender: 'Martin',
+            timestamp: '10:30 AM',
+            senderImage: require('../../assets/people/image-1.png'),
+            isMine: false,
+            reactions: [],
+          },
+          {
+            id: '2',
+            text: 'Me too! Should I bring anything?',
+            sender: 'Julia',
+            timestamp: '10:35 AM',
+            senderImage: require('../../assets/people/image-3.png'),
+            isMine: false,
+            reactions: [],
+          },
+          {
+            id: '3',
+            text: 'Just bring yourself! I\'ll handle the food.',
+            sender: 'Martin',
+            timestamp: '10:40 AM',
+            senderImage: require('../../assets/people/image-1.png'),
+            isMine: false,
+            reactions: [],
+          },
+          {
+            id: '4',
+            text: 'I will if the weather is sunny. Yesterday, at sunrise, there were some great 🔥🔥 photos.',
+            timestamp: '11:10 AM',
+            sender: 'Mike',
+            senderImage: require('../../assets/people/image-2.png'),
+            isMine: true,
+            reactions: [
+              { emoji: '😍', count: 4 },
+              { emoji: '😢', count: 2 },
+            ]
+          },
+          {
+            id: '5',
+            text: 'Super! Is there another photo showing manatees and 🐬 dolphins? I want to show my friends.',
+            sender: 'Julia',
+            timestamp: '11:14 AM',
+            senderImage: require('../../assets/people/image-3.png'),
+            isMine: false,
+            reactions: [],
+          },
+        ]
+  );
 
   const chat = {
     id: id,
@@ -124,18 +174,30 @@ export default function ChatScreen() {
     { name: 'Demi', image: require('../../assets/people/image-5.png') },
   ];
 
-  const sampleReplies = [
-    'Thanks for your message!',
-    'That sounds great!',
-    'I agree!',
-    'Let me check and get back to you.',
-    'Awesome!',
-    'Can you share more details?',
-    'I will join!',
-    'Looking forward to it!',
-    'Haha, good one!',
-    'See you there!',
-  ];
+  // For individual chat, always reply as the person
+  const sampleReplies = isIndividualChat
+    ? [
+        'I\'m good, thanks!',
+        'How are you?',
+        'That sounds nice!',
+        'Let me know if you need anything.',
+        'Haha, thanks!',
+        'See you soon!',
+        'Great to hear from you!',
+        'Sure, I\'ll be there!',
+      ]
+    : [
+        'Thanks for your message!',
+        'That sounds great!',
+        'I agree!',
+        'Let me check and get back to you.',
+        'Awesome!',
+        'Can you share more details?',
+        'I will join!',
+        'Looking forward to it!',
+        'Haha, good one!',
+        'See you there!',
+      ];
 
   const handleSend = () => {
     if (inputText.trim().length > 0) {
@@ -152,6 +214,7 @@ export default function ChatScreen() {
           text: inputText.trim(),
           isMine: true,
           timestamp,
+          sender: 'You',
           senderImage: require('../../assets/people/image-2.png'),
           reactions: [],
         }
@@ -160,22 +223,40 @@ export default function ChatScreen() {
 
       // Simulate a reply after a short delay
       setTimeout(() => {
-        // Pick a random participant (not the current user)
-        const others = participantList.filter(p => p.name !== 'You');
-        const randomParticipant = others[Math.floor(Math.random() * others.length)];
-        const replyText = sampleReplies[Math.floor(Math.random() * sampleReplies.length)];
-        const replyTimestamp = `${hour12}:${(minutes + 1).toString().padStart(2, '0')} ${ampm}`;
-        setMessages(prev => ([
-          ...prev,
-          {
-            id: (Date.now() + 1).toString(),
-            text: replyText,
-            isMine: false,
-            sender: randomParticipant.name,
-            senderImage: randomParticipant.image,
-            timestamp: replyTimestamp,
-          }
-        ]));
+        if (isIndividualChat) {
+          const replyText = sampleReplies[Math.floor(Math.random() * sampleReplies.length)];
+          const replyTimestamp = `${hour12}:${(minutes + 1).toString().padStart(2, '0')} ${ampm}`;
+          setMessages(prev => ([
+            ...prev,
+            {
+              id: (Date.now() + 1).toString(),
+              text: replyText,
+              isMine: false,
+              sender: personName as string,
+              senderImage: personImage,
+              timestamp: replyTimestamp,
+              reactions: [],
+            }
+          ]));
+        } else {
+          // ... existing group chat reply logic ...
+          const others = participantList.filter(p => p.name !== 'You');
+          const randomParticipant = others[Math.floor(Math.random() * others.length)];
+          const replyText = sampleReplies[Math.floor(Math.random() * sampleReplies.length)];
+          const replyTimestamp = `${hour12}:${(minutes + 1).toString().padStart(2, '0')} ${ampm}`;
+          setMessages(prev => ([
+            ...prev,
+            {
+              id: (Date.now() + 1).toString(),
+              text: replyText,
+              isMine: false,
+              sender: randomParticipant.name,
+              senderImage: randomParticipant.image,
+              timestamp: replyTimestamp,
+              reactions: [],
+            }
+          ]));
+        }
       }, 900);
     }
   };
@@ -243,16 +324,16 @@ export default function ChatScreen() {
             
             <View style={styles.headerCenterContent}>
               <View style={styles.avatarWrapper}>
-                <View style={[styles.avatarBorder, { borderColor: chat.borderColor }]}>
+                <View style={[styles.avatarBorder, { borderColor: isIndividualChat ? '#4694FD' : chat.borderColor }]}>
                   <View style={styles.avatarContainer}>
-                    <Image source={chat.image} style={styles.avatarImage} />
+                    <Image source={isIndividualChat ? personImage : chat.image} style={styles.avatarImage} />
                   </View>
                 </View>
               </View>
               
               <View style={styles.headerTextContainer}>
-                <Text style={styles.headerTitle}>{chat.title}</Text>
-                {formatParticipants(chat.participants)}
+                <Text style={styles.headerTitle}>{isIndividualChat ? personName : chat.title}</Text>
+                {!isIndividualChat && formatParticipants(chat.participants)}
               </View>
             </View>
             
@@ -318,7 +399,7 @@ export default function ChatScreen() {
                   </View>
                 )}
                 
-                {message.reactions && message.isMine && (
+                {Array.isArray(message.reactions) && message.reactions.length > 0 && message.isMine && (
                   <View style={[styles.reactionsRow, { marginLeft: 14 }]}>
                     {message.reactions.map((reaction, index) => (
                       <View
