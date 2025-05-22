@@ -116,6 +116,27 @@ export default function ChatScreen() {
     }
   }, [chatMarker]);
 
+  const participantList = [
+    { name: 'Martin', image: require('../../assets/people/image-1.png') },
+    { name: 'Mike', image: require('../../assets/people/image-2.png') },
+    { name: 'Julia', image: require('../../assets/people/image-3.png') },
+    { name: 'Mia', image: require('../../assets/people/image-4.png') },
+    { name: 'Demi', image: require('../../assets/people/image-5.png') },
+  ];
+
+  const sampleReplies = [
+    'Thanks for your message!',
+    'That sounds great!',
+    'I agree!',
+    'Let me check and get back to you.',
+    'Awesome!',
+    'Can you share more details?',
+    'I will join!',
+    'Looking forward to it!',
+    'Haha, good one!',
+    'See you there!',
+  ];
+
   const handleSend = () => {
     if (inputText.trim().length > 0) {
       const now = new Date();
@@ -136,6 +157,26 @@ export default function ChatScreen() {
         }
       ]));
       setInputText('');
+
+      // Simulate a reply after a short delay
+      setTimeout(() => {
+        // Pick a random participant (not the current user)
+        const others = participantList.filter(p => p.name !== 'You');
+        const randomParticipant = others[Math.floor(Math.random() * others.length)];
+        const replyText = sampleReplies[Math.floor(Math.random() * sampleReplies.length)];
+        const replyTimestamp = `${hour12}:${(minutes + 1).toString().padStart(2, '0')} ${ampm}`;
+        setMessages(prev => ([
+          ...prev,
+          {
+            id: (Date.now() + 1).toString(),
+            text: replyText,
+            isMine: false,
+            sender: randomParticipant.name,
+            senderImage: randomParticipant.image,
+            timestamp: replyTimestamp,
+          }
+        ]));
+      }, 900);
     }
   };
 
