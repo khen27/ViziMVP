@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { BlurView } from 'expo-blur';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Get the screen dimensions
 const { width: screenWidth } = Dimensions.get('window');
@@ -55,90 +56,98 @@ const GroupFlyout: React.FC<GroupFlyoutProps> = ({ group, onViewChatPress }) => 
     : [getRandomAvatar(), getRandomAvatar(), getRandomAvatar()];
 
   return (
-    <View style={styles.container}>
-      {/* Grabber bar at the top */}
-      <View style={styles.grabber} />
-
-      {/* Group image with pills */}
-      <View style={styles.imageContainer}>
-        <Image source={group.image} style={styles.backgroundImage} resizeMode="cover" />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View style={{
+          width: 36,
+          height: 5,
+          borderRadius: 2.5,
+          backgroundColor: 'rgba(60,60,67,0.3)',
+          alignSelf: 'center',
+          marginVertical: 8,
+        }} />
         
-        {/* Pills container - positioned as in the reference design */}
-        <View style={styles.pillsContainer}>
-          <View style={styles.pillsRow}>
-            {/* Left pill (audience) */}
-            <View style={styles.leftPillWrapper}>
-              <View style={styles.pill}>
-                <Text style={styles.pillText}>{group.audience}</Text>
+        {/* Group image with pills */}
+        <View style={styles.imageContainer}>
+          <Image source={group.image} style={styles.backgroundImage} resizeMode="cover" />
+          
+          {/* Pills container - positioned as in the reference design */}
+          <View style={styles.pillsContainer}>
+            <View style={styles.pillsRow}>
+              {/* Left pill (audience) */}
+              <View style={styles.leftPillWrapper}>
+                <View style={styles.pill}>
+                  <Text style={styles.pillText}>{group.audience}</Text>
+                </View>
               </View>
-            </View>
-            
-            {/* Right pill (age range) */}
-            <View style={styles.rightPillWrapper}>
-              <View style={styles.pill}>
-                <Text style={styles.pillText}>{group.ageRange}</Text>
+              
+              {/* Right pill (age range) */}
+              <View style={styles.rightPillWrapper}>
+                <View style={styles.pill}>
+                  <Text style={styles.pillText}>{group.ageRange}</Text>
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
 
-      {/* Group info section */}
-      <View style={styles.infoContainer}>
-        {/* Title and members row */}
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>{group.title}</Text>
-          <View style={styles.membersContainer}>
-            <View style={styles.avatarsStack}>
-              {avatarImages.map((img, i) => (
-                <Image
-                  key={i}
-                  source={img}
-                  style={[styles.avatar, i === 1 && styles.avatar2, i === 2 && styles.avatar3, { zIndex: 3 - i }]}
+        {/* Group info section */}
+        <View style={styles.infoContainer}>
+          {/* Title and members row */}
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>{group.title}</Text>
+            <View style={styles.membersContainer}>
+              <View style={styles.avatarsStack}>
+                {avatarImages.map((img, i) => (
+                  <Image
+                    key={i}
+                    source={img}
+                    style={[styles.avatar, i === 1 && styles.avatar2, i === 2 && styles.avatar3, { zIndex: 3 - i }]}
+                  />
+                ))}
+              </View>
+              <Text style={styles.memberCount}>+{memberCount}</Text>
+            </View>
+          </View>
+          {/* Description */}
+          <Text style={styles.description}>{group.description}</Text>
+          {/* Location with map pin icon */}
+          <View style={styles.locationRow}>
+            <View style={styles.locationIcon}>
+              <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <Path
+                  d="M14 7C12.9 7 12.0001 7.9 12.0001 9C12.0001 10.1 12.9 11 14 11C15.1 11 16 10.1 16 9C16 7.9 15.1 7 14 7Z"
+                  stroke="black"
+                  strokeWidth="1.15"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-              ))}
+                <Path
+                  d="M21 12C21 17.8333 14 23.3333 14 23.3333C14 23.3333 7 17.8333 7 12C7 9.34784 8.05357 6.8043 9.92893 4.92893C11.8043 3.05357 14.3478 2 17 2C19.6522 2 22.1957 3.05357 24.0711 4.92893C25.9464 6.8043 27 9.34784 27 12Z"
+                  stroke="black"
+                  strokeWidth="1.15"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Svg>
             </View>
-            <Text style={styles.memberCount}>+{memberCount}</Text>
+            <Text style={styles.location}>{group.location}</Text>
           </View>
-        </View>
-        {/* Description */}
-        <Text style={styles.description}>{group.description}</Text>
-        {/* Location with map pin icon */}
-        <View style={styles.locationRow}>
-          <View style={styles.locationIcon}>
-            <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <Path
-                d="M14 7C12.9 7 12.0001 7.9 12.0001 9C12.0001 10.1 12.9 11 14 11C15.1 11 16 10.1 16 9C16 7.9 15.1 7 14 7Z"
-                stroke="black"
-                strokeWidth="1.15"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M21 12C21 17.8333 14 23.3333 14 23.3333C14 23.3333 7 17.8333 7 12C7 9.34784 8.05357 6.8043 9.92893 4.92893C11.8043 3.05357 14.3478 2 17 2C19.6522 2 22.1957 3.05357 24.0711 4.92893C25.9464 6.8043 27 9.34784 27 12Z"
-                stroke="black"
-                strokeWidth="1.15"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </Svg>
+          {/* Tags */}
+          <View style={styles.tagsContainer}>
+            {group.tags.map((tag, index) => (
+              <View key={index} style={styles.tagChip}>
+                <Text style={styles.tagText}>{tag}</Text>
+              </View>
+            ))}
           </View>
-          <Text style={styles.location}>{group.location}</Text>
+          {/* View Chat button */}
+          <TouchableOpacity style={styles.button} onPress={onViewChatPress}>
+            <Text style={styles.buttonText}>View Chat</Text>
+          </TouchableOpacity>
         </View>
-        {/* Tags */}
-        <View style={styles.tagsContainer}>
-          {group.tags.map((tag, index) => (
-            <View key={index} style={styles.tagChip}>
-              <Text style={styles.tagText}>{tag}</Text>
-            </View>
-          ))}
-        </View>
-        {/* View Chat button */}
-        <TouchableOpacity style={styles.button} onPress={onViewChatPress}>
-          <Text style={styles.buttonText}>View Chat</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -146,18 +155,17 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: 0,
-    width: '100%',
-    alignItems: 'center',
+    left: 0,
+    right: 0,
+    height: 537,
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    shadowColor: 'rgba(9, 65, 115, 0.05)',
+    borderRadius: 32,
+    shadowColor: 'rgba(9,65,115,0.05)',
     shadowOffset: { width: 0, height: -8 },
     shadowRadius: 60,
-    shadowOpacity: 1,
-    elevation: 20,
+    elevation: 10,
     paddingTop: 20,
-    paddingBottom: 0,
+    paddingBottom: 60,
     zIndex: 100,
   },
   grabber: {

@@ -14,6 +14,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getWidgetImageByIndex } from '../utils/imageUtils';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ChatDetailsModalProps {
   visible: boolean;
@@ -52,7 +53,7 @@ const defaultChatData = {
   imageUrl: null,
   participants: 12,
   duration: '12 hours',
-  tags: ['Traveling', 'Cooking'],
+  tags: ['Wellness', 'Dog-Friendly', 'Sports', 'Traveling', 'Cooking'],
   distance: 0.7,
   createdBy: 'John Doe',
   createdAt: 'Today, 10:30 AM',
@@ -60,6 +61,28 @@ const defaultChatData = {
   borderColorIndex: 0,
   audience: 'Women',
   ageRange: '18yr > 50yr',
+};
+
+// Map of tag names to emojis - used for fallback when tag doesn't include emoji
+const TAG_EMOJIS: Record<string, string> = {
+  'Wellness': '🧘',
+  'Dog-Friendly': '🐕',
+  'Sports': '⚽',
+  'Traveling': '✈️',
+  'Cooking': '👨‍🍳',
+  'Music': '🎵',
+  'Art': '🎨',
+  'Reading': '📚',
+  'Gaming': '🎮',
+  'Outdoors': '🏞️',
+  'Fitness': '💪',
+  'Movies': '🎬',
+  'Camping': '🏕️',
+  'Beach trips': '🏖️',
+  'Swimming': '🏊',
+  'Hiking': '🥾',
+  'Theatre': '🎭',
+  'Photography': '📷',
 };
 
 const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
@@ -70,6 +93,7 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
 }) => {
   // Use the default chat data if chatData is null
   const actualChatData = chatData || defaultChatData;
+  const insets = useSafeAreaInsets();
   
   const screenHeight = Dimensions.get('window').height;
   const modalHeight = screenHeight * 0.8; // 80% of screen height
@@ -114,16 +138,16 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <View style={[styles.modalContent, { height: modalHeight }]}>
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity 
+          style={{ flex: 1 }}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+        <View style={[styles.container, { paddingBottom: 60 + insets.bottom }]}>
           {/* Header with Grabber */}
-          <View style={styles.header}>
-            <Image 
-              source={require('../../assets/icons/Grabber.png')}
-              style={styles.grabber}
-            />
-          </View>
-
+          <View style={styles.grabber} />
+          
           <ScrollView 
             style={styles.scrollView}
             showsVerticalScrollIndicator={false}
@@ -189,21 +213,37 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
 
             {/* Interest Tags */}
             <View style={styles.interestTagsContainer}>
-              <View style={styles.tagItem}>
-                <Text style={styles.tagText}>Wellness</Text>
-              </View>
-              <View style={styles.tagItem}>
-                <Text style={styles.tagText}>Dog-Friendly</Text>
-              </View>
-              <View style={styles.tagItem}>
-                <Text style={styles.tagText}>⚽ Sports</Text>
-              </View>
+              {(actualChatData.tags || []).map((tag, index) => {
+                // Get the emoji for this tag
+                const emoji = TAG_EMOJIS[tag] || '🏷️';
+                
+                return (
+                  <View key={index} style={styles.tagItem}>
+                    <Text style={styles.tagText}>{emoji} {tag}</Text>
+                  </View>
+                );
+              })}
+              {/* Show fallback tags if no tags are provided */}
+              {(!actualChatData.tags || actualChatData.tags.length === 0) && (
+                <>
+                  <View style={styles.tagItem}>
+                    <Text style={styles.tagText}>🧘 Wellness</Text>
+                  </View>
+                  <View style={styles.tagItem}>
+                    <Text style={styles.tagText}>🐕 Dog-Friendly</Text>
+                  </View>
+                  <View style={styles.tagItem}>
+                    <Text style={styles.tagText}>⚽ Sports</Text>
+                  </View>
+                </>
+              )}
             </View>
 
             {/* View Chat Button */}
             <TouchableOpacity 
               style={styles.viewChatButton}
               onPress={onJoin}
+              activeOpacity={0.8}
             >
               <Text style={styles.viewChatButtonText}>View Chat</Text>
             </TouchableOpacity>
@@ -216,34 +256,36 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-  },
-  modalContent: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 'auto',
+    maxHeight: '85%',
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
-    width: '100%',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 5,
-    paddingBottom: 0,
+    shadowColor: 'rgba(9,65,115,0.15)',
+    shadowOffset: { width: 0, height: -8 },
+    shadowRadius: 60,
+    elevation: 10,    // for Android
+    paddingTop: 0,
+    zIndex: 100,
   },
   grabber: {
     width: 36,
     height: 5,
-    resizeMode: 'contain',
+    borderRadius: 2.5,
+    backgroundColor: 'rgba(60,60,67,0.3)',
+    alignSelf: 'center',
+    marginVertical: 8,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 50,
+    paddingBottom: 30,
   },
   imageContainer: {
     width: '100%',
@@ -368,16 +410,21 @@ const styles = StyleSheet.create({
   },
   viewChatButton: {
     width: '100%',
-    height: 50,
-    borderRadius: 25,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#0B228C',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24,
+    marginBottom: 20,
+    shadowColor: '#0B228C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
   },
   viewChatButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     fontFamily: 'DMSans-Medium',
   },
