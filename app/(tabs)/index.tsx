@@ -9,6 +9,7 @@ import { Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
 import Toast from '../components/Toast';
+import CreateChatModal from '../components/CreateChatModal';
 
 // Import icons
 const filterIcon = require('../../assets/icons/icon-filter.png');
@@ -81,9 +82,16 @@ export default function TabOneScreen() {
   const mapHeight = screenHeight - navBarHeight - mapBottomMargin;
 
   const [toastVisible, setToastVisible] = useState(false);
+  const [createChatModalVisible, setCreateChatModalVisible] = useState(false);
 
   return (
     <View style={styles.container}>
+      {/* Create Chat Modal */}
+      <CreateChatModal 
+        visible={createChatModalVisible} 
+        onClose={() => setCreateChatModalVisible(false)} 
+      />
+      
       {/* Toast notification */}
       <Toast
         visible={toastVisible}
@@ -136,7 +144,7 @@ export default function TabOneScreen() {
           <TouchableOpacity
             style={styles.redButton}
             onPress={() => {
-              // Add your red button action here
+              setCreateChatModalVisible(true);
             }}
           >
             <Image source={truckIcon} style={styles.iconImage} />
