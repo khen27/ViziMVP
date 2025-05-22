@@ -17,6 +17,7 @@ const searchIcon = require('../../assets/icons/icon-search.png');
 const addIcon = require('../../assets/icons/icon-add.png');
 const locateIcon = require('../../assets/icons/icon-locate.png');
 const infoToastIcon = require('../../assets/icons/icon-toast-information.png');
+const truckIcon = require('../../assets/icons/icon-truck.png');
 
 const createMarker = (lon: number, lat: number, id: string) => (
   <Marker 
@@ -132,6 +133,15 @@ export default function TabOneScreen() {
         
         {/* Bottom right buttons */}
         <View style={styles.bottomRightButtons}>
+          <TouchableOpacity
+            style={styles.redButton}
+            onPress={() => {
+              // Add your red button action here
+            }}
+          >
+            <Image source={truckIcon} style={styles.iconImage} />
+          </TouchableOpacity>
+          
           <TouchableOpacity
             style={styles.blueButton}
             onPress={() => {
@@ -282,6 +292,19 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 50,
     backgroundColor: '#4694FD',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(9, 65, 115, 0.2)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  redButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    backgroundColor: '#FF0000',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: 'rgba(9, 65, 115, 0.2)',
