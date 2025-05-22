@@ -18,6 +18,7 @@ import { getWidgetImageByIndex } from '../utils/imageUtils';
 import { ChatDataContext } from '../context/ChatDataContext';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 // Type definitions for chat data
 interface User {
@@ -50,6 +51,7 @@ export default function TabTwoScreen() {
   // Use the shared chat data context
   const { chatMarkers } = useContext(ChatDataContext);
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   
   // Featured users at the top
   const users: User[] = [
@@ -179,14 +181,22 @@ export default function TabTwoScreen() {
   
   const chats = dynamicChats;
 
+  // Handle chat item press
+  const handleChatPress = (chatId: string) => {
+    router.push(`/chat/${chatId}`);
+  };
+
   // Renders a user avatar with name
   const renderUser = ({item}: {item: User}) => (
-    <View style={styles.userContainer}>
+    <TouchableOpacity 
+      style={styles.userContainer}
+      onPress={() => handleChatPress(item.id)}
+    >
       <View style={styles.userAvatarContainer}>
         <Image source={item.image} style={styles.userAvatar} />
       </View>
       <Text style={styles.userName}>{item.name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   // Renders each chat list item
@@ -355,7 +365,11 @@ export default function TabTwoScreen() {
           >
             {chats.length > 0 ? (
               chats.map((chat) => (
-                <TouchableOpacity key={chat.id} activeOpacity={0.7}>
+                <TouchableOpacity 
+                  key={chat.id} 
+                  activeOpacity={0.7}
+                  onPress={() => handleChatPress(chat.id)}
+                >
                   {renderChatItem({item: chat})}
                 </TouchableOpacity>
               ))
