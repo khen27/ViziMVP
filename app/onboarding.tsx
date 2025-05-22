@@ -10,7 +10,7 @@ import {
   ImageBackground,
   Image,
 } from 'react-native';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import {
   useFonts,
   DMSans_400Regular,
@@ -42,44 +42,47 @@ export default function OnboardingScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require('../assets/onboarding-bg.png')}
-        style={styles.backgroundImage}
-        resizeMode="cover"
-      >
-        <SafeAreaView style={styles.contentContainer}>
-          <Image
-            source={require('../assets/vizi-logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.container}>
+        <ImageBackground
+          source={require('../assets/onboarding-bg.png')}
+          style={styles.backgroundImage}
+          resizeMode="cover"
+        >
+          <SafeAreaView style={styles.contentContainer}>
+            <Image
+              source={require('../assets/vizi-logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
 
-          <View style={styles.textFrame}>
-            <Text style={styles.title}>Vizi</Text>
-            <Text style={styles.subtitle}>
-              Where Journeys Begin and Connections Last...
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.push('/onboarding-2')}
-          >
-            <View style={styles.buttonInner}>
-              <Text style={styles.buttonText}>Get Started</Text>
-              <View style={styles.arrowContainer}>
-                <Ionicons 
-                  name="chevron-forward" 
-                  size={22} 
-                  color="#0B228C" 
-                />
-              </View>
+            <View style={styles.textFrame}>
+              <Text style={styles.title}>Vizi</Text>
+              <Text style={styles.subtitle}>
+                Where Journeys Begin and Connections Last...
+              </Text>
             </View>
-          </TouchableOpacity>
-        </SafeAreaView>
-      </ImageBackground>
-    </View>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => router.push('/onboarding-2')}
+            >
+              <View style={styles.buttonInner}>
+                <Text style={styles.buttonText}>Get Started</Text>
+                <View style={styles.arrowContainer}>
+                  <Ionicons 
+                    name="chevron-forward" 
+                    size={22} 
+                    color="#0B228C" 
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+          </SafeAreaView>
+        </ImageBackground>
+      </View>
+    </>
   );
 }
 

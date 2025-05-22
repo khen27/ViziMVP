@@ -20,6 +20,8 @@ if (Platform.OS !== 'web') {
 LogBox.ignoreLogs([
   'Required default export not found',
   'TurboModuleRegistry.getEnforcing',
+  'Cannot find native module',
+  'Component auth has not been registered yet'
 ]);
 
 import { useColorScheme } from '@/components/useColorScheme';
@@ -72,11 +74,12 @@ function RootLayoutNav() {
         gestureEnabled: false,
         animation: 'none'
       }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding-2" options={{ headerShown: false }} />
-        <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
       </Stack>
     </ThemeProvider>
   );

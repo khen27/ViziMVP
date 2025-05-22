@@ -106,7 +106,7 @@ export default function OnboardingStepTwo() {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.continueButton}
-              onPress={() => router.push('/sign-in')}
+              onPress={() => router.push('/(auth)')}
             >
               <Text style={styles.continueText}>Continue</Text>
             </TouchableOpacity>

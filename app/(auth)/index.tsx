@@ -1,22 +1,26 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Pressable } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { DMSans_400Regular, DMSans_500Medium } from '@expo-google-fonts/dm-sans';
 import { Pacifico_400Regular } from '@expo-google-fonts/pacifico';
-import { router, Stack } from 'expo-router';
+import { router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
-const { width, height } = Dimensions.get('window');
+// Import mock auth for demonstration
+import { auth } from '../utils/firebase';
+
+const { width } = Dimensions.get('window');
 
 // Prevent auto-hiding splash screen
 SplashScreen.preventAutoHideAsync();
 
-export default function SignInScreen() {
+export default function SignIn() {
   const insets = useSafeAreaInsets();
   const [appIsReady, setAppIsReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Load fonts
   const [fontsLoaded] = useFonts({
@@ -25,8 +29,33 @@ export default function SignInScreen() {
     Pacifico_400Regular,
   });
 
+  // Google Sign-In function
+  const signInWithGoogle = async () => {
+    try {
+      setIsLoading(true);
+      
+      // For now, we'll just simulate a successful sign-in with our mock
+      console.log('Google sign-in simulation');
+      
+      // Call our mock auth
+      const result = await auth.signIn('demo@example.com', 'password');
+      console.log('Mock signed in user:', result.user);
+      
+      // Navigate to main app screen after a short delay
+      setTimeout(() => {
+        setIsLoading(false);
+        router.push('/(tabs)');
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error during sign-in:', error);
+      Alert.alert('Authentication Failed', 'Failed to sign in. Please try again.');
+      setIsLoading(false);
+    }
+  };
+
   // Prepare the app - load all resources
-  React.useEffect(() => {
+  useEffect(() => {
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
@@ -62,49 +91,44 @@ export default function SignInScreen() {
   }
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
-      <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
-        <View style={styles.content}>
-          {/* Simpler approach for Vizi logo */}
-          <View style={styles.logoContainer}>
-            <Text style={styles.viziLogo}>Vizi</Text>
-          </View>
-
-          <View style={styles.textFrame}>
-            <Text style={styles.welcome}>Welcome to Vizi</Text>
-            <Text style={styles.subtitle}>
-              Join real-time group chats with others nearby who match your vibe.
-            </Text>
-          </View>
-
-          <View style={styles.buttonStack}>
-            <TouchableOpacity style={styles.primaryButton}>
-              <Image source={require('../assets/icons/icon-apple.png')} style={styles.buttonIcon} />
-              <Text style={styles.primaryButtonText}>Sign in with Apple</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.secondaryButton}>
-              <Image source={require('../assets/icons/icon-google.png')} style={styles.buttonIcon} />
-              <Text style={styles.secondaryButtonText}>Sign in with Google</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.termsContainer}>
-            <Text style={styles.terms}>
-              By continuing, you agree to our <Text style={styles.link} onPress={() => router.push('/(tabs)')}>Terms of service</Text> and <Text style={styles.link} onPress={() => router.push('/')}>Privacy Policy</Text>.
-            </Text>
-          </View>
+    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.content}>
+        {/* Vizi logo */}
+        <View style={styles.logoContainer}>
+          <Text style={styles.viziLogo}>Vizi</Text>
         </View>
-      </SafeAreaView>
 
-      {/* Add blue gradient background at bottom */}
-      <LinearGradient
-        colors={['#7389EC', '#4694FD']}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={styles.bottomGradient}
-      />
-    </>
+        <View style={styles.textFrame}>
+          <Text style={styles.welcome}>Welcome to Vizi</Text>
+          <Text style={styles.subtitle}>
+            Join real-time group chats with others nearby who match your vibe.
+          </Text>
+        </View>
+
+        <View style={styles.buttonStack}>
+          <TouchableOpacity style={styles.primaryButton}>
+            <Image source={require('../../assets/icons/icon-apple.png')} style={styles.buttonIcon} />
+            <Text style={styles.primaryButtonText}>Sign in with Apple</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.secondaryButton, isLoading && styles.disabledButton]}
+            onPress={signInWithGoogle}
+            disabled={isLoading}
+          >
+            <Image source={require('../../assets/icons/icon-google.png')} style={styles.buttonIcon} />
+            <Text style={styles.secondaryButtonText}>
+              {isLoading ? 'Signing in...' : 'Sign in with Google'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.termsContainer}>
+          <Text style={styles.terms}>
+            By continuing, you agree to our <Text style={styles.link} onPress={() => router.push('/(tabs)')}>Terms of service</Text> and <Text style={styles.link} onPress={() => router.push('/')}>Privacy Policy</Text>.
+          </Text>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -117,47 +141,46 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
-    justifyContent: 'flex-start',
-    paddingTop: 140,
+    justifyContent: 'center',
+    paddingTop: 0, // Remove top padding to center content better
   },
   logoContainer: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
-    paddingVertical: 20,
+    marginBottom: 15,
+    paddingHorizontal: 20, // Add horizontal padding to prevent clipping
   },
   viziLogo: {
     fontFamily: 'Pacifico_400Regular',
-    fontSize: 100,
-    color: '#6B85F6', // Blue color similar to the gradient
+    fontSize: 100, // Keeping the Vizi logo size as is
+    color: '#6B85F6',
     textAlign: 'center',
     includeFontPadding: true,
     textShadowColor: 'rgba(70, 148, 253, 0.3)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 3,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10, // Add horizontal padding to prevent clipping
   },
   textFrame: {
-    width: 373,
-    maxWidth: '100%',
+    width: '100%',
+    maxWidth: 373,
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 40,
   },
   welcome: {
     fontFamily: 'DMSans_500Medium',
-    fontSize: 32,
-    lineHeight: 36,
+    fontSize: 28,
+    lineHeight: 32,
     textAlign: 'center',
-    letterSpacing: -0.05 * 32,
+    letterSpacing: -0.05 * 28,
     color: '#000000',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   subtitle: {
-    fontFamily: 'DMSans_500Medium',
+    fontFamily: 'DMSans_400Regular',
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 22,
     textAlign: 'center',
     letterSpacing: -0.01 * 16,
     color: 'rgba(0, 0, 0, 0.6)',
@@ -165,8 +188,8 @@ const styles = StyleSheet.create({
   buttonStack: {
     width: '100%',
     maxWidth: 373, 
-    gap: 16,
-    marginBottom: 60,
+    gap: 12,
+    marginBottom: 30,
   },
   primaryButton: {
     flexDirection: 'row',
@@ -198,6 +221,10 @@ const styles = StyleSheet.create({
     borderColor: '#D1D5DB',
     paddingHorizontal: 24,
   },
+  disabledButton: {
+    opacity: 0.7,
+    backgroundColor: '#f5f5f5',
+  },
   secondaryButtonText: {
     color: '#000',
     fontFamily: 'DMSans_500Medium',
@@ -207,38 +234,31 @@ const styles = StyleSheet.create({
     letterSpacing: -0.05 * 16,
   },
   buttonIcon: {
-    width: 28,
-    height: 28,
-    marginRight: 12,
+    width: 24,
+    height: 24,
+    marginRight: 10,
     resizeMode: 'contain',
   },
   termsContainer: {
-    width: 373,
-    maxWidth: '100%',
+    width: '100%',
+    maxWidth: 373,
     alignItems: 'center',
-    marginTop: 'auto',
-    marginBottom: 30,
+    position: 'absolute',
+    bottom: 40,
+    paddingHorizontal: 20,
   },
   terms: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
-    lineHeight: 22,
+    lineHeight: 18,
     textAlign: 'center',
     color: '#000000',
   },
   link: {
     fontFamily: 'DMSans_400Regular',
     fontSize: 12,
-    lineHeight: 22,
+    lineHeight: 18,
     color: '#4694FD',
     textDecorationLine: 'underline',
-  },
-  bottomGradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 130,
-    zIndex: -1,
   },
 }); 
