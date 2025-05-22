@@ -40,6 +40,40 @@
     "extra": {
       "eas": {
         "projectId": "vizi-app"
+      },
+      "disableReactDevTools": true,
+      "disableInspector": true,
+      "EXPO_DISABLE_DEVELOPER_TOOLS": true,
+      "EXPO_NO_DEV_MENU": true
+    },
+    "developmentClient": {
+      "silentLaunch": true,
+      "disableInspector": true,
+      "disableDevMenu": true,
+      "hideInspector": true
+    },
+    "experiments": {
+      "tsconfigPaths": true,
+      "noInspector": true
+    },
+    "packagerOpts": {
+      "sourceExts": ["js", "jsx", "ts", "tsx", "json"],
+      "config": "metro.config.js",
+      "noInspector": true
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "extends": null,
+    "developer": {
+      "tool": "none",
+      "unbundle": false,
+      "toolbarLaunch": false,
+      "inspectorLaunch": false,
+      "devOptions": {
+        "inspectorOptions": {
+          "enabled": false
+        }
       }
     }
   }

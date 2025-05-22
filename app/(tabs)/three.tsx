@@ -13,22 +13,32 @@ import {
   Keyboard,
   ScrollView,
   AppState,
+  Alert,
+  Image,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { LinearGradient } from 'expo-linear-gradient';
 import EmojiRating from '@/app/components/EmojiRating';
 import i18n from '@/app/utils/i18n';
+import { collection, addDoc, serverTimestamp, db, app } from '@/app/utils/firebase';
+import { Firestore } from 'firebase/firestore';
+import Toast from '@/app/components/Toast';
 
 const { width, height } = Dimensions.get('window');
 
 // Keep splash screen visible while fonts load
 SplashScreen.preventAutoHideAsync();
 
-export default function TabThreeScreen() {
-  const [selectedEmoji, setSelectedEmoji] = useState(3); // Default to the "Good" emoji (🙂)
-  const [contactMe, setContactMe] = useState(false);
-  const [feedback, setFeedback] = useState('');
+function TabThreeScreen() {
+  const [rating, setRating] = useState<number>(3); // Default to the "Good" emoji (🙂)
+  const [feedbackText, setFeedbackText] = useState<string>('');
+  const [contactMe, setContactMe] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [showErrorToast, setShowErrorToast] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [, forceUpdate] = useState(0);
 
   const [fontsLoaded] = useFonts({
@@ -37,7 +47,6 @@ export default function TabThreeScreen() {
   });
 
   // Set up a listener to force a UI update when app becomes active
-  // This ensures language changes are reflected
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
       if (nextAppState === 'active') {
@@ -63,6 +72,90 @@ export default function TabThreeScreen() {
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
+  };
+
+  const handleSubmit = async () => {
+    if (!feedbackText.trim()) {
+      setErrorMessage('Please enter your feedback before submitting.');
+      setShowErrorToast(true);
+      return;
+    }
+
+    console.log("Submitting feedback:", { rating, feedbackText, contactMe });
+
+    if (!app) {
+      setErrorMessage('Something went wrong. Please try again.');
+      setShowErrorToast(true);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      // Create feedback data
+      const feedbackData = {
+        rating,
+        feedbackText: feedbackText.trim(),
+        contactMe,
+      };
+
+      // Use collection reference
+      const feedbackCollection = collection(db, "feedback");
+      
+      let isSubmitted = false;
+      try {
+        // Try to submit to Firestore with a timeout
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Connection timed out')), 5000)
+        );
+        
+        await Promise.race([
+          addDoc(feedbackCollection, feedbackData),
+          timeoutPromise
+        ]);
+        
+        isSubmitted = true;
+        console.log('Feedback successfully submitted to Firestore');
+      } catch (firestoreError) {
+        console.warn('Could not write to Firestore, saving locally instead:', firestoreError);
+        
+        // Save to AsyncStorage directly here to ensure it's saved
+        try {
+          const offlineData = await AsyncStorage.getItem('offlineFeedback') || '[]';
+          const feedbackArray = JSON.parse(offlineData);
+          feedbackArray.push({
+            ...feedbackData,
+            pendingUpload: true,
+            timestamp: new Date().toISOString()
+          });
+          await AsyncStorage.setItem('offlineFeedback', JSON.stringify(feedbackArray));
+          console.log('Feedback saved locally successfully');
+          isSubmitted = true; // Consider local save a success
+        } catch (storageError) {
+          console.error('Failed to store feedback locally:', storageError);
+          throw new Error('Could not save feedback');
+        }
+      }
+
+      // If we got here, either Firestore or local storage succeeded
+      if (isSubmitted) {
+        // Show success toast and reset form
+        setShowToast(true);
+        setFeedbackText('');
+        setRating(3);
+        setContactMe(false);
+      }
+
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      
+      // Only show error toast for truly fatal errors 
+      // (not connection issues, which we've already handled)
+      setErrorMessage('Something went wrong. Please try again.');
+      setShowErrorToast(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -91,8 +184,8 @@ export default function TabThreeScreen() {
                   </View>
 
                   <EmojiRating 
-                    selectedEmoji={selectedEmoji} 
-                    onSelect={setSelectedEmoji} 
+                    selectedEmoji={rating} 
+                    onSelect={setRating} 
                   />
 
                   <View style={styles.inputContainer}>
@@ -101,8 +194,8 @@ export default function TabThreeScreen() {
                       multiline
                       placeholder={i18n.t('feedback.textInputPlaceholder')}
                       placeholderTextColor="rgba(0, 0, 0, 0.3)"
-                      value={feedback}
-                      onChangeText={setFeedback}
+                      value={feedbackText}
+                      onChangeText={setFeedbackText}
                     />
 
                     <View style={styles.checkboxContainer}>
@@ -117,8 +210,14 @@ export default function TabThreeScreen() {
                       </Text>
                     </View>
 
-                    <TouchableOpacity style={styles.submitButton}>
-                      <Text style={styles.submitButtonText}>{i18n.t('feedback.submit')}</Text>
+                    <TouchableOpacity 
+                      style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
+                      onPress={handleSubmit}
+                      disabled={isSubmitting}
+                    >
+                      <Text style={styles.submitButtonText}>
+                        {isSubmitting ? 'Submitting...' : i18n.t('feedback.submit')}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -128,6 +227,31 @@ export default function TabThreeScreen() {
           
           <View style={styles.homeIndicator} />
         </LinearGradient>
+
+        <Toast
+          visible={showToast}
+          message="Thanks! We've received your feedback."
+          onHide={() => setShowToast(false)}
+          icon={<Image source={require('@/assets/icons/icon-toast-tick-circle.png')} style={styles.toastIcon} />}
+          backgroundColor="#FFFFFF"
+          borderColor="rgba(70, 148, 253, 0.2)"
+          shadowColor="rgba(70, 148, 253, 0.1)"
+          textColor="#000000"
+          topOffset={51}
+          duration={3000}
+        />
+        <Toast
+          visible={showErrorToast}
+          message={errorMessage}
+          onHide={() => setShowErrorToast(false)}
+          icon={<Image source={require('@/assets/icons/icon-toast-info-circle.png')} style={styles.toastIcon} />}
+          backgroundColor="#FFFFFF"
+          borderColor="rgba(255, 163, 0, 0.2)"
+          shadowColor="rgba(248, 92, 58, 0.1)"
+          textColor="#000000"
+          topOffset={51}
+          duration={3000}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -160,7 +284,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 100, // Extra padding to avoid tab bar overlap
+    paddingBottom: 180, // Increased padding to avoid tab bar overlap
   },
   content: {
     flex: 1,
@@ -255,6 +379,9 @@ const styles = StyleSheet.create({
     letterSpacing: -0.24,
     color: '#FFFFFF',
   },
+  submitButtonDisabled: {
+    opacity: 0.7,
+  },
   homeIndicator: {
     width: 134,
     height: 5,
@@ -264,4 +391,14 @@ const styles = StyleSheet.create({
     bottom: 8,
     alignSelf: 'center',
   },
+  toastIcon: {
+    width: 20,
+    height: 20,
+  },
+  errorToast: {
+    width: 300,
+    borderRadius: 50,
+  },
 });
+
+export default TabThreeScreen;

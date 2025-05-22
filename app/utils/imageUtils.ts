@@ -47,4 +47,9 @@ export const getRandomWidgetImage = () => {
 export const getWidgetImageByIndex = (index: number) => {
   const safeIndex = index % widgetImages.length;
   return widgetImages[safeIndex];
-}; 
+};
+
+// Add default export for Expo Router
+export default function ImageUtils() {
+  return null;
+} 

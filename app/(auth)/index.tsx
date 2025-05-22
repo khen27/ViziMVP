@@ -9,8 +9,8 @@ import { router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
-// Import mock auth for demonstration
-import { auth } from '../utils/firebase';
+// Import line for auth
+import { app } from '../utils/firebase';
 
 const { width } = Dimensions.get('window');
 
@@ -29,17 +29,13 @@ export default function SignIn() {
     Pacifico_400Regular,
   });
 
-  // Google Sign-In function
+  // Instead of using auth from mock firebase, create a simple signin function
   const signInWithGoogle = async () => {
     try {
       setIsLoading(true);
       
-      // For now, we'll just simulate a successful sign-in with our mock
+      // For now, we'll just simulate a successful sign-in
       console.log('Google sign-in simulation');
-      
-      // Call our mock auth
-      const result = await auth.signIn('demo@example.com', 'password');
-      console.log('Mock signed in user:', result.user);
       
       // Navigate to main app screen after a short delay
       setTimeout(() => {

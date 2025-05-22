@@ -1,11 +1,10 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable, StyleSheet, View, Platform, Dimensions, Text } from 'react-native';
+import { Pressable, StyleSheet, View, Platform, Dimensions, Text, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
 import { MapIcon, ChatIcon, HelpIcon, NotificationIcon, ProfileIcon } from '@/app/components/TabBarIcons';
 
 // Get screen dimensions for precise positioning
@@ -33,8 +32,12 @@ function TabBarSpacer() {
   return <View style={{ height: 80 }} />;
 }
 
+// Simple color scheme function to avoid the filename error
+const getColorScheme = () => 'light';
+
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  // Use our simplified function
+  const colorScheme = getColorScheme();
   
   // Custom tab bar that ensures perfect spacing
   function CustomTabBar({ state, descriptors, navigation }: any) {
@@ -110,18 +113,20 @@ export default function TabLayout() {
   }
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-      }}
-      tabBar={props => <CustomTabBar {...props} />}
-    >
-      <Tabs.Screen name="index" />
-      <Tabs.Screen name="two" />
-      <Tabs.Screen name="three" />
-      <Tabs.Screen name="four" />
-      <Tabs.Screen name="five" />
-    </Tabs>
+    <>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+        }}
+        tabBar={props => <CustomTabBar {...props} />}
+      >
+        <Tabs.Screen name="index" />
+        <Tabs.Screen name="two" />
+        <Tabs.Screen name="three" />
+        <Tabs.Screen name="four" />
+        <Tabs.Screen name="five" />
+      </Tabs>
+    </>
   );
 }
 
@@ -143,5 +148,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 5,
-  }
+  },
 });
