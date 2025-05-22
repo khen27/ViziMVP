@@ -35,9 +35,15 @@ const focusTags = [
 interface CreateChatModalProps {
   visible: boolean;
   onClose: () => void;
+  onSave?: (values?: {
+    chatName: string;
+    description: string;
+    selectedTags: string[];
+    duration: string;
+  }) => void;
 }
 
-const CreateChatModal: React.FC<CreateChatModalProps> = ({ visible, onClose }) => {
+const CreateChatModal: React.FC<CreateChatModalProps> = ({ visible, onClose, onSave }) => {
   // State variables
   const [chatName, setChatName] = useState('');
   const [description, setDescription] = useState('');
@@ -72,8 +78,29 @@ const CreateChatModal: React.FC<CreateChatModalProps> = ({ visible, onClose }) =
       setShowNameError(true);
       return;
     }
-    // Would handle save logic here
-    onClose();
+    
+    // Call onSave if provided with form values
+    if (onSave) {
+      // Pass form values
+      onSave({
+        chatName,
+        description,
+        selectedTags,
+        duration: chatDuration
+      });
+    } else {
+      onClose();
+    }
+    
+    // Reset form
+    setChatName('');
+    setDescription('');
+    setSelectedTags([]);
+    setInterestFilter('Everyone');
+    setAgeRange({ min: 18, max: 100 });
+    setMaxDistance(10);
+    setChatDuration('12 hours');
+    setIsPrivate(false);
   };
 
   return (

@@ -10,6 +10,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
 import Toast from '../components/Toast';
 import CreateChatModal from '../components/CreateChatModal';
+import GroupChatMarker from '../components/GroupChatMarker';
+import ChatDetailsModal from '../components/ChatDetailsModal';
+import { getNextWidgetImage, getRandomWidgetImage } from '../utils/imageUtils';
 
 // Import icons
 const filterIcon = require('../../assets/icons/icon-filter.png');
@@ -19,6 +22,26 @@ const addIcon = require('../../assets/icons/icon-add.png');
 const locateIcon = require('../../assets/icons/icon-locate.png');
 const infoToastIcon = require('../../assets/icons/icon-toast-information.png');
 const truckIcon = require('../../assets/icons/icon-truck.png');
+
+// Define chat marker type
+interface ChatMarker {
+  id: string;
+  latitude: number;
+  longitude: number;
+  imageUrl: string | null;
+  participants: number;
+  name?: string;
+  location?: string;
+  description?: string;
+  duration?: string;
+  tags?: string[];
+  distance?: number;
+  createdBy?: string;
+  createdAt?: string;
+  imageIndex?: number;
+  borderColorIndex?: number;
+  progress?: number;
+}
 
 const createMarker = (lon: number, lat: number, id: string) => (
   <Marker 
@@ -50,8 +73,69 @@ export default function TabOneScreen() {
   // Markers state
   const [markers, setMarkers] = useState([{ id: '1', lat: 0, lon: 0 }]);
   
+  // Chat markers state - initialize with an empty array
+  const [chatMarkers, setChatMarkers] = useState<ChatMarker[]>([
+    // Sample chat marker to demonstrate feature
+    {
+      id: 'sample-1',
+      latitude: 25.781,  // Slightly offset from Miami center
+      longitude: -80.195,
+      imageUrl: null,
+      participants: 15,
+      name: 'Miami Food Tour',
+      location: '584 NW 26th St, Miami, FL 33127',
+      description: 'Join us for a tour of the best food spots in Miami! We\'ll be visiting the local favorites and trying out some amazing dishes.',
+      duration: '12 hours',
+      tags: ['Cooking', 'Traveling'],
+      distance: 0.7,
+      createdBy: 'John Doe',
+      createdAt: 'Today, 10:30 AM',
+      imageIndex: 0, // Use first image for sample
+      borderColorIndex: 0, // Orange
+    },
+    // Add a few more markers with different images
+    {
+      id: 'sample-2',
+      latitude: 25.786,
+      longitude: -80.205,
+      imageUrl: null,
+      participants: 8,
+      name: 'Beach Volleyball Meetup',
+      location: 'South Beach, Miami, FL',
+      description: 'Weekly beach volleyball meetup. All skill levels welcome!',
+      duration: '3 hours',
+      tags: ['Sports', 'Beach trips'],
+      distance: 1.2,
+      createdBy: 'Sarah Johnson',
+      createdAt: 'Yesterday, 2:15 PM',
+      imageIndex: 3, // Use fourth image
+      borderColorIndex: 1, // Blue
+    },
+    {
+      id: 'sample-3',
+      latitude: 25.765,
+      longitude: -80.19,
+      imageUrl: null,
+      participants: 22,
+      name: 'Wynwood Art Walk',
+      location: 'Wynwood Arts District, Miami, FL',
+      description: 'Exploring the street art and galleries in Wynwood. Join us for drinks after!',
+      duration: '24 hours',
+      tags: ['Art', 'Photography'],
+      distance: 0.5,
+      createdBy: 'Miguel Rodriguez',
+      createdAt: '2 days ago',
+      imageIndex: 7, // Use eighth image
+      borderColorIndex: 2, // Red
+    }
+  ]);
+  
   // Filter button state
   const [filterPressed, setFilterPressed] = useState(false);
+
+  // For the chat details modal
+  const [selectedChat, setSelectedChat] = useState<ChatMarker | null>(null);
+  const [chatDetailsModalVisible, setChatDetailsModalVisible] = useState(false);
 
   // Toggle filter state
   const toggleFilter = () => {
@@ -73,6 +157,69 @@ export default function TabOneScreen() {
     return { lat, lon };
   }
 
+  // Get random food image
+  const getRandomFoodImage = () => {
+    const foods = ['taco', 'pizza', 'burger', 'sushi', 'salad', 'pasta', 'sandwich', 'dessert'];
+    const randomFood = foods[Math.floor(Math.random() * foods.length)];
+    return `https://source.unsplash.com/featured/?${randomFood}`;
+  };
+
+  // Add new chat marker
+  const addChatMarker = (formValues?: {
+    chatName: string;
+    description: string;
+    selectedTags: string[];
+    duration: string;
+  }) => {
+    const { lat, lon } = getRandomLatLng(region);
+    
+    // Generate a unique index for the image based on the current count
+    const imageIndex = chatMarkers.length % 15;
+    
+    // Randomly select a border color
+    const borderColorIndex = Math.floor(Math.random() * 3); // 0, 1, or 2
+    
+    // Random progress between 0.2 and 1
+    const progress = 0.2 + Math.random() * 0.8;
+    
+    const newChatMarker: ChatMarker = {
+      id: Date.now().toString(),
+      latitude: lat,
+      longitude: lon,
+      imageUrl: null, // No URL - we'll use our local images
+      participants: Math.floor(Math.random() * 48) + 2, // Random between 2-50,
+      name: formValues?.chatName || 'Group Chat',
+      location: '584 NW 26th St, Miami, FL 33127',
+      description: formValues?.description || 'Join this interesting group chat!',
+      duration: formValues?.duration || '12 hours',
+      tags: formValues?.selectedTags?.length ? formValues.selectedTags : ['General'],
+      distance: Number((Math.random() * 5).toFixed(1)), // Random distance 0-5 miles
+      createdBy: 'You',
+      createdAt: 'Just now',
+      imageIndex: imageIndex, // Assign an image index
+      borderColorIndex: borderColorIndex, // Assign a border color
+      progress: progress, // Assign random progress
+    };
+    
+    setChatMarkers([...chatMarkers, newChatMarker]);
+    setCreateChatModalVisible(false);
+  };
+
+  // Handler for when a group chat marker is pressed
+  const handleChatMarkerPress = (chatMarker: ChatMarker) => {
+    if (chatMarker) {
+      setSelectedChat(chatMarker);
+      setChatDetailsModalVisible(true);
+    }
+  };
+  
+  // Handle joining a chat
+  const handleJoinChat = () => {
+    // For now, just close the modal - future enhancement would be to join the chat
+    setChatDetailsModalVisible(false);
+    setToastVisible(true);
+  };
+
   const insets = useSafeAreaInsets();
   const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -90,7 +237,25 @@ export default function TabOneScreen() {
       <CreateChatModal 
         visible={createChatModalVisible} 
         onClose={() => setCreateChatModalVisible(false)} 
+        onSave={(values) => {
+          // Form values will be used to create a new chat
+          addChatMarker(values);
+        }}
       />
+      
+      {/* Chat Details Modal */}
+      {selectedChat && (
+        <ChatDetailsModal
+          visible={chatDetailsModalVisible}
+          onClose={() => {
+            setChatDetailsModalVisible(false);
+            // Clear the selected chat when closing the modal
+            setSelectedChat(null);
+          }}
+          onJoin={handleJoinChat}
+          chatData={selectedChat}
+        />
+      )}
       
       {/* Toast notification */}
       <Toast
@@ -136,6 +301,30 @@ export default function TabOneScreen() {
             onRegionChangeComplete={setRegion}
           >
             {markers.map(marker => createMarker(marker.lon, marker.lat, marker.id))}
+            
+            {/* Render group chat markers */}
+            {chatMarkers.map(chatMarker => (
+              <Marker
+                key={chatMarker.id}
+                coordinate={{
+                  latitude: chatMarker.latitude,
+                  longitude: chatMarker.longitude
+                }}
+                anchor={{ x: 0.5, y: 0.5 }}
+                tracksViewChanges={false}
+              >
+                <GroupChatMarker
+                  imageUrl={chatMarker.imageUrl}
+                  participants={chatMarker.participants}
+                  latitude={chatMarker.latitude}
+                  longitude={chatMarker.longitude}
+                  onPress={() => handleChatMarkerPress(chatMarker)}
+                  imageIndex={chatMarker.imageIndex}
+                  borderColorIndex={chatMarker.borderColorIndex}
+                  progress={chatMarker.progress}
+                />
+              </Marker>
+            ))}
           </MapView>
         </RNView>
         
