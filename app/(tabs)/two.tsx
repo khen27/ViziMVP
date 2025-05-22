@@ -17,6 +17,7 @@ import Svg, { Path, Rect } from 'react-native-svg';
 import { getWidgetImageByIndex } from '../utils/imageUtils';
 import { ChatDataContext } from '../context/ChatDataContext';
 import { BlurView } from 'expo-blur';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Type definitions for chat data
 interface User {
@@ -48,6 +49,7 @@ const BORDER_COLORS = ['#FFA300', '#4694FD', '#ED5370'];
 export default function TabTwoScreen() {
   // Use the shared chat data context
   const { chatMarkers } = useContext(ChatDataContext);
+  const insets = useSafeAreaInsets();
   
   // Featured users at the top
   const users: User[] = [
@@ -180,37 +182,49 @@ export default function TabTwoScreen() {
   // Renders a user avatar with name
   const renderUser = ({item}: {item: User}) => (
     <View style={styles.userContainer}>
-      <Image source={item.image} style={styles.userAvatar} />
+      <View style={styles.userAvatarContainer}>
+        <Image source={item.image} style={styles.userAvatar} />
+      </View>
       <Text style={styles.userName}>{item.name}</Text>
     </View>
   );
 
   // Renders each chat list item
   const renderChatItem = ({item}: {item: Chat}) => (
-    <View style={styles.chatItemContainer}>
-      <View style={styles.chatImageWrapper}>
-        <Image source={item.image} style={styles.chatImage} resizeMode="cover" />
-        
-        {/* Add audience and age range pills if available */}
-        <View style={styles.chatImagePillsContainer}>
-          <View style={styles.chatImagePillsRow}>
-            {/* Left pill could show audience or group type */}
-            {item.borderColor && (
-              <View style={styles.pillWrapper}>
-                <View style={styles.pill}>
-                  <Text style={styles.pillText}>Group</Text>
-                </View>
-              </View>
-            )}
-            
-            {/* Right pill could show age range */}
-            <View style={styles.pillWrapper}>
-              <View style={styles.pill}>
-                <Text style={styles.pillText}>18yr ›</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+    <View style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 20,
+      gap: 12,
+      backgroundColor: '#EAF2F9',
+    }}>
+      <View style={{
+        width: 72,
+        height: 72,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+        borderRadius: 36,
+        backgroundColor: '#FFFFFF',
+        overflow: 'hidden',
+      }}>
+        <View style={{
+          position: 'absolute',
+          width: 72,
+          height: 72,
+          borderRadius: 36,
+          borderWidth: 3,
+          borderColor: item.borderColor || '#4694FD',
+        }} />
+        <Image
+          source={typeof item.image === 'string' ? { uri: item.image } : item.image}
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+          }}
+        />
       </View>
       
       <View style={styles.chatContent}>
@@ -334,7 +348,8 @@ export default function TabTwoScreen() {
             style={styles.chatListContainer}
             contentContainerStyle={[
               styles.chatListContent,
-              chats.length === 0 && styles.emptyChatListContent
+              chats.length === 0 && styles.emptyChatListContent,
+              { paddingBottom: 90 + insets.bottom }
             ]}
             showsVerticalScrollIndicator={false}
           >
@@ -434,10 +449,20 @@ const styles = StyleSheet.create({
   userListContent: {
     gap: 20,
     alignItems: 'center',
+    paddingHorizontal: 4,
   },
   userContainer: {
     alignItems: 'center',
     marginRight: 10,
+  },
+  userAvatarContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   userAvatar: {
     width: 50,
@@ -467,8 +492,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   chatListContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 140, // Increased to ensure content doesn't get cut off
+    paddingHorizontal: 0,
+    paddingBottom: 80,
   },
   chatItemContainer: {
     flexDirection: 'row',
@@ -482,56 +507,53 @@ const styles = StyleSheet.create({
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 22,
+    borderRadius: 36,
     overflow: 'hidden',
     padding: 0,
   },
   chatImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 22,
+    borderRadius: 36,
   },
   chatImagePillsContainer: {
     position: 'absolute',
     top: 0,
-    left: 0,
-    right: 0,
+    right: 0, // Changed from 'left: 0, right: 0' to just right-aligned
     padding: 4,
     zIndex: 10,
-    gap: 8,
   },
   chatImagePillsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end', // Right-align the pill
     alignItems: 'flex-start',
-    width: '100%',
+    width: 'auto', // Changed from 100% to auto
     height: 20,
-    gap: 4,
   },
   pillWrapper: {
-    height: 20,
+    height: 16, // Smaller height
     justifyContent: 'center',
   },
   pill: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    minWidth: 40,
-    height: 20,
+    paddingHorizontal: 4, // Smaller padding
+    paddingVertical: 1,  // Smaller padding
+    minWidth: 30, // Smaller minimum width
+    height: 16, // Smaller height
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 50,
+    borderRadius: 8, // Smaller radius
     overflow: 'hidden',
   },
   pillText: {
     fontFamily: 'DMSans-SemiBold',
     fontStyle: 'normal',
     fontWeight: '600',
-    fontSize: 10,
-    lineHeight: 14,
+    fontSize: 8, // Smaller text
+    lineHeight: 10, // Smaller line height
     color: '#FFFFFF',
-    letterSpacing: -0.01 * 10,
+    letterSpacing: -0.01 * 8,
     textAlign: 'center',
   },
   chatImageBorder: {
@@ -543,7 +565,6 @@ const styles = StyleSheet.create({
   },
   chatContent: {
     flex: 1,
-    marginLeft: 12,
     justifyContent: 'center',
   },
   chatInfo: {
@@ -626,6 +647,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0B228C',
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 4,
   },
   unreadCount: {
     fontFamily: 'DMSans-Medium',
