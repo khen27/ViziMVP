@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, Rect } from 'react-native-svg';
+import { getWidgetImageByIndex } from '../utils/imageUtils';
+import { ChatDataContext } from '../context/ChatDataContext';
 
 // Type definitions for chat data
 interface User {
@@ -38,7 +40,13 @@ interface Chat {
   participants?: string;
 }
 
+// Define the possible border colors (same as in GroupChatMarker)
+const BORDER_COLORS = ['#FFA300', '#4694FD', '#ED5370'];
+
 export default function TabTwoScreen() {
+  // Use the shared chat data context
+  const { chatMarkers } = useContext(ChatDataContext);
+  
   // Featured users at the top
   const users: User[] = [
     { id: '1', name: 'Martin', image: require('../../assets/people/image-1.png') },
@@ -49,8 +57,52 @@ export default function TabTwoScreen() {
     { id: '6', name: 'Brian', image: require('../../assets/people/image.png') },
   ];
 
-  // Chat list data
-  const chats: Chat[] = [
+  // Convert chatMarkers to chat list items
+  const dynamicChats = chatMarkers.map(marker => {
+    // Determine which border color to use
+    const borderColor = marker.borderColorIndex !== undefined ? 
+      BORDER_COLORS[marker.borderColorIndex % BORDER_COLORS.length] : undefined;
+    
+    // Determine which image to use
+    const image = marker.imageIndex !== undefined ? 
+      getWidgetImageByIndex(marker.imageIndex) : require('../../assets/paddleboarding.png');
+    
+    // Random message texts for variety
+    const messageTexts = [
+      'Anyone want to join?',
+      'We need more people!',
+      'Great event coming up!',
+      'Looking forward to this!',
+      'Let\'s make this happen!',
+    ];
+    
+    // Random timestamps for variety
+    const timestamps = [
+      'Just now',
+      '5m ago',
+      '10m ago',
+      '30m ago',
+      '1h ago',
+      '2h ago',
+    ];
+    
+    return {
+      id: marker.id,
+      title: marker.name || 'Group Chat',
+      image: image,
+      borderColor: borderColor,
+      lastMessage: {
+        id: `m-${marker.id}`,
+        text: messageTexts[Math.floor(Math.random() * messageTexts.length)],
+        timestamp: timestamps[Math.floor(Math.random() * timestamps.length)],
+        unreadCount: Math.random() > 0.5 ? Math.floor(Math.random() * 5) + 1 : undefined,
+      },
+      participants: marker.participants.toString(),
+    };
+  });
+  
+  // Fallback chats if no dynamic chats are available
+  const fallbackChats: Chat[] = [
     {
       id: '1',
       title: 'Paddleboarding',
@@ -120,6 +172,35 @@ export default function TabTwoScreen() {
       }
     },
   ];
+  
+  // Use dynamic chats if available, otherwise fallback to static chats
+  // Add placeholder chats if we have fewer than 4 dynamic chats
+  if (dynamicChats.length > 0 && dynamicChats.length < 4) {
+    // Calculate how many placeholder chats we need
+    const placeholdersNeeded = 4 - dynamicChats.length;
+    
+    // Use the existing fallback chats as placeholders
+    for (let i = 0; i < placeholdersNeeded && i < fallbackChats.length; i++) {
+      // Ensure the lastMessage has all required properties
+      const lastMsg = {
+        id: fallbackChats[i].lastMessage.id,
+        text: fallbackChats[i].lastMessage.text || '',
+        timestamp: fallbackChats[i].lastMessage.timestamp,
+        unreadCount: fallbackChats[i].lastMessage.unreadCount || undefined
+      };
+      
+      dynamicChats.push({
+        id: `placeholder-${i}`, // Ensure unique IDs
+        title: fallbackChats[i].title,
+        image: fallbackChats[i].image,
+        borderColor: fallbackChats[i].borderColor || '#4694FD',
+        lastMessage: lastMsg,
+        participants: fallbackChats[i].participants || '5',
+      });
+    }
+  }
+  
+  const chats = dynamicChats.length > 0 ? dynamicChats : fallbackChats;
 
   // Renders a user avatar with name
   const renderUser = ({item}: {item: User}) => (
@@ -267,128 +348,15 @@ export default function TabTwoScreen() {
               </TouchableOpacity>
             ))}
           </ScrollView>
+          
+          {/* Add gradient overlay */}
+          <LinearGradient
+            colors={['rgba(234, 242, 249, 0)', '#EAF2F9']}
+            style={styles.gradientOverlay}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+          />
         </View>
-        
-        {/* Bottom navigation bar - now inside the white background */}
-        <View style={styles.navigationBar}>
-          <TouchableOpacity style={styles.navItem}>
-            <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <Path
-                d="M3.5 10.5L14 3.5L24.5 10.5V22.1667C24.5 22.7855 24.2542 23.379 23.8166 23.8166C23.379 24.2542 22.7855 24.5 22.1667 24.5H5.83333C5.21449 24.5 4.621 24.2542 4.18342 23.8166C3.74583 23.379 3.5 22.7855 3.5 22.1667V10.5Z"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M10.5 24.5V14H17.5V24.5"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </Svg>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={[styles.navItem, styles.navItemActive]}>
-            <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <Path
-                d="M4.66699 23.334H23.3337V7.00065C23.3337 6.38181 23.0878 5.78832 22.6502 5.35074C22.2127 4.91315 21.6192 4.66732 21.0003 4.66732H7.00033C6.38149 4.66732 5.788 4.91315 5.35042 5.35074C4.91283 5.78832 4.66699 6.38181 4.66699 7.00065V23.334Z"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M9.33301 9.33398H18.6663"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M9.33301 14H14.0003"
-                stroke="#FFFFFF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </Svg>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.navItem}>
-            <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <Path
-                d="M14 24.5C19.799 24.5 24.5 19.799 24.5 14C24.5 8.20101 19.799 3.5 14 3.5C8.20101 3.5 3.5 8.20101 3.5 14C3.5 19.799 8.20101 24.5 14 24.5Z"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M10.6162 10.616C10.3521 10.8807 10.143 11.1957 10.0009 11.5434C9.85868 11.891 9.78631 12.2645 9.78631 12.6416C9.78631 13.0188 9.85868 13.3923 10.0009 13.7399C10.143 14.0876 10.3521 14.4025 10.6162 14.6673C10.881 14.9314 11.1959 15.1406 11.5436 15.2827C11.8912 15.4249 12.2647 15.4973 12.6419 15.4973C13.019 15.4973 13.3925 15.4249 13.7402 15.2827C14.0878 15.1406 14.4028 14.9314 14.6675 14.6673"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M12.8328 10.4998H12.8445"
-                stroke="#90C2FF"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M17.4995 17.4998H17.5112"
-                stroke="#90C2FF"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </Svg>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.navItem}>
-            <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <Path
-                d="M21 12.25C21 18.0833 14 23.3333 14 23.3333C14 23.3333 7 18.0833 7 12.25C7 10.1283 7.84285 8.09432 9.34315 6.59403C10.8434 5.09373 12.8774 4.25088 14.9991 4.25088C17.1208 4.25088 19.1548 5.09373 20.6551 6.59403C22.1554 8.09432 22.9983 10.1283 22.9983 12.25H21Z"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M14 15.1668C15.6569 15.1668 17 13.8236 17 12.1668C17 10.5099 15.6569 9.16675 14 9.16675C12.3431 9.16675 11 10.5099 11 12.1668C11 13.8236 12.3431 15.1668 14 15.1668Z"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </Svg>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.navItem}>
-            <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <Path
-                d="M14 16.3332C16.3012 16.3332 18.1667 14.4677 18.1667 12.1665C18.1667 9.86536 16.3012 7.99984 14 7.99984C11.6989 7.99984 9.83337 9.86536 9.83337 12.1665C9.83337 14.4677 11.6989 16.3332 14 16.3332Z"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <Path
-                d="M7 22.1668C7 18.9548 10.134 16.3335 14 16.3335C17.866 16.3335 21 18.9548 21 22.1668"
-                stroke="#90C2FF"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </Svg>
-          </TouchableOpacity>
-        </View>
-        {/* Home indicator line */}
-        <View style={styles.homeIndicator} />
       </LinearGradient>
     </View>
   );
@@ -403,7 +371,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     position: 'absolute',
     width: '100%',
-    flex: 1, // Fill the whole screen
+    height: '92%', // Increased from 86% to cover more of the screen
     backgroundColor: '#EAF2F9',
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
@@ -412,6 +380,7 @@ const styles = StyleSheet.create({
     shadowRadius: 100,
     shadowOpacity: 0.5,
     elevation: 10,
+    overflow: 'hidden', // Added to hide any elements that might be appearing outside bounds
   },
   header: {
     width: '100%',
@@ -494,7 +463,7 @@ const styles = StyleSheet.create({
   },
   chatListContent: {
     paddingHorizontal: 20,
-    paddingBottom: 90, // Extra space at bottom
+    paddingBottom: 140, // Increased to ensure content doesn't get cut off
   },
   chatItemContainer: {
     flexDirection: 'row',
@@ -621,37 +590,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 90,
-    backgroundColor: 'rgba(234, 242, 249, 0.8)',
-  },
-  navigationBar: {
-    position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    height: 60,
-    paddingHorizontal: 24,
-    gap: 24,
-    bottom: 35,
-    left: 0,
-  },
-  navItem: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  navItemActive: {
-    backgroundColor: '#0B228C',
-  },
-  homeIndicator: {
-    width: 134,
-    height: 5,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 100,
-    position: 'absolute',
-    bottom: 8,
-    alignSelf: 'center',
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    zIndex: 20,
   },
 });

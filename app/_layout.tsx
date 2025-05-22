@@ -5,8 +5,9 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import { Platform, LogBox, AppRegistry, View } from 'react-native';
+import { Platform, LogBox, AppRegistry, View, useColorScheme } from 'react-native';
 import Constants from 'expo-constants';
+import ChatDataProvider from './context/ChatDataContext';
 
 // Try to load RNLocalize early to avoid module issues
 if (Platform.OS !== 'web') {
@@ -57,7 +58,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: 'index',
+  initialRouteName: '(tabs)',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -69,34 +70,41 @@ const useAppColorScheme = () => {
 };
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  const [loaded, error] = useFonts({
     'DMSans-Regular': require('../assets/fonts/DMSans-Regular.ttf'),
     'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
 
-  // Don't mount the router until fonts are ready
-  if (!fontsLoaded) {
-    return null; // or a loading screen
+  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+  useEffect(() => {
+    if (error) throw error;
+  }, [error]);
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
   }
 
+  return <RootLayoutNav />;
+}
+
+function RootLayoutNav() {
+  const colorScheme = useColorScheme();
+
   return (
-    <View style={{ flex: 1 }}>
-      <ThemeProvider value={DefaultTheme}>
-        <Stack screenOptions={{
-          headerShown: false,
-          gestureEnabled: false,
-          animation: 'none'
-        }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="onboarding-2" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
+    <ChatDataProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
-    </View>
+    </ChatDataProvider>
   );
 }

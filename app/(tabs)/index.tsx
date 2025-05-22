@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, Alert, ViewStyle, Image, Platform, View as RNView } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import type { Region } from 'react-native-maps';
 import { View } from '@/components/Themed';
 import MapView, { Marker } from 'react-native-maps';
@@ -13,6 +13,7 @@ import CreateChatModal from '../components/CreateChatModal';
 import GroupChatMarker from '../components/GroupChatMarker';
 import ChatDetailsModal from '../components/ChatDetailsModal';
 import { getNextWidgetImage, getRandomWidgetImage } from '../utils/imageUtils';
+import { ChatDataContext } from '../context/ChatDataContext';
 
 // Import icons
 const filterIcon = require('../../assets/icons/icon-filter.png');
@@ -73,9 +74,6 @@ export default function TabOneScreen() {
   // Markers state
   const [markers, setMarkers] = useState([{ id: '1', lat: 0, lon: 0 }]);
   
-  // Chat markers state - initialize with an empty array
-  const [chatMarkers, setChatMarkers] = useState<ChatMarker[]>([]);
-  
   // Filter button state
   const [filterPressed, setFilterPressed] = useState(false);
 
@@ -110,7 +108,10 @@ export default function TabOneScreen() {
     return `https://source.unsplash.com/featured/?${randomFood}`;
   };
 
-  // Add new chat marker
+  // Add this line near the beginning of the component, after other useState declarations
+  const { chatMarkers, setChatMarkers } = useContext(ChatDataContext);
+  
+  // Update the addChatMarker function to use the context
   const addChatMarker = (formValues?: {
     chatName: string;
     description: string;
@@ -128,7 +129,7 @@ export default function TabOneScreen() {
     // Random progress between 0.2 and 1
     const progress = 0.2 + Math.random() * 0.8;
     
-    const newChatMarker: ChatMarker = {
+    const newChatMarker = {
       id: Date.now().toString(),
       latitude: lat,
       longitude: lon,
