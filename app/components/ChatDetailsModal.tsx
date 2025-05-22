@@ -33,6 +33,8 @@ interface ChatDetailsModalProps {
     createdAt?: string;
     imageIndex?: number;
     borderColorIndex?: number;
+    audience?: string;
+    ageRange?: string;
   };
 }
 
@@ -56,6 +58,8 @@ const defaultChatData = {
   createdAt: 'Today, 10:30 AM',
   imageIndex: 0,
   borderColorIndex: 0,
+  audience: 'Women',
+  ageRange: '18yr > 50yr',
 };
 
 const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
@@ -112,11 +116,12 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
     >
       <View style={styles.container}>
         <View style={[styles.modalContent, { height: modalHeight }]}>
-          {/* Header with Close Button */}
+          {/* Header with Grabber */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="chevron-down" size={24} color="#000" />
-            </TouchableOpacity>
+            <Image 
+              source={require('../../assets/icons/Grabber.png')}
+              style={styles.grabber}
+            />
           </View>
 
           <ScrollView 
@@ -125,88 +130,83 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
             contentContainerStyle={styles.scrollContent}
           >
             {/* Main Image */}
-            <View style={[styles.imageContainer, { borderColor }]}>
+            <View style={styles.imageContainer}>
               <Image
                 source={actualChatData.imageUrl ? { uri: actualChatData.imageUrl } : defaultImage}
                 style={styles.headerImage}
                 resizeMode="cover"
               />
-              <LinearGradient
-                colors={['rgba(0,0,0,0.5)', 'transparent']}
-                style={styles.imageGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
+              
+              {/* Pills Container */}
+              <View style={styles.pillsContainer}>
+                <View style={styles.pillsRow}>
+                  {/* Left pill (audience) */}
+                  <View style={styles.leftPillWrapper}>
+                    <View style={styles.pill}>
+                      <Text style={styles.pillText}>{actualChatData.audience || 'General'}</Text>
+                    </View>
+                  </View>
+                  
+                  {/* Right pill (age range) */}
+                  <View style={styles.rightPillWrapper}>
+                    <View style={styles.pill}>
+                      <Text style={styles.pillText}>{actualChatData.ageRange || '18yr >'}</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            {/* Group Name Row with Avatars */}
+            <View style={styles.groupNameRow}>
+              <Text style={styles.chatName}>{actualChatData.name || 'Group Chat'}</Text>
+              <View style={styles.avatarsRow}>
+                <Text style={styles.plusCount}>+10</Text>
+                <View style={styles.avatarsStack}>
+                  <Image source={require('../../assets/people/image-1.png')} style={styles.avatar} />
+                  <Image source={require('../../assets/people/image-3.png')} style={[styles.avatar, styles.avatar3]} />
+                  {/* Middle avatar - larger and in front */}
+                  <Image source={require('../../assets/people/image-2.png')} style={[styles.avatarCenter]} />
+                </View>
+              </View>
+            </View>
+
+            {/* Description text - only show if there's a description */}
+            {actualChatData.description ? (
+              <Text style={styles.description}>
+                {actualChatData.description}
+              </Text>
+            ) : null}
+
+            {/* Location row with icon */}
+            <View style={styles.locationRow}>
+              <Image 
+                source={require('../../assets/icons/icon-group-chat-location.png')} 
+                style={styles.locationIcon} 
               />
-              <View style={styles.participantsContainer}>
-                <View style={styles.participantsBadge}>
-                  <Text style={styles.participantsText}>{actualChatData.participants} people</Text>
-                </View>
+              <Text style={styles.locationText}>{actualChatData.location || '584 NW 26th St, Miami, FL 33127'}</Text>
+            </View>
+
+            {/* Interest Tags */}
+            <View style={styles.interestTagsContainer}>
+              <View style={styles.tagItem}>
+                <Text style={styles.tagText}>Wellness</Text>
+              </View>
+              <View style={styles.tagItem}>
+                <Text style={styles.tagText}>Dog-Friendly</Text>
+              </View>
+              <View style={styles.tagItem}>
+                <Text style={styles.tagText}>⚽ Sports</Text>
               </View>
             </View>
 
-            {/* Chat Name */}
-            <Text style={styles.chatName}>{actualChatData.name || 'Group Chat'}</Text>
-
-            {/* Location Info */}
-            <View style={styles.locationContainer}>
-              <Ionicons name="location-outline" size={18} color="#555" />
-              <Text style={styles.locationText}>{actualChatData.location || 'Location not specified'}</Text>
-            </View>
-
-            {/* Distance and Duration */}
-            <View style={styles.metaContainer}>
-              <View style={styles.metaItem}>
-                <Ionicons name="time-outline" size={18} color="#555" />
-                <Text style={styles.metaText}>{actualChatData.duration || '12 hours'}</Text>
-              </View>
-              <View style={styles.metaDivider} />
-              <View style={styles.metaItem}>
-                <Ionicons name="navigate-outline" size={18} color="#555" />
-                <Text style={styles.metaText}>{actualChatData.distance || 0} miles away</Text>
-              </View>
-            </View>
-
-            {/* Tags */}
-            <View style={styles.tagsContainer}>
-              {(actualChatData.tags || ['General']).map((tag) => (
-                <View key={tag} style={styles.tagItem}>
-                  <Text style={styles.tagText}>{tag}</Text>
-                </View>
-              ))}
-            </View>
-
-            {/* Description */}
-            <View style={styles.descriptionContainer}>
-              <Text style={styles.sectionTitle}>About</Text>
-              <Text style={styles.descriptionText}>{actualChatData.description || 'No description available.'}</Text>
-            </View>
-
-            {/* Created By Info */}
-            <View style={styles.creatorContainer}>
-              <Text style={styles.creatorLabel}>Created by</Text>
-              <Text style={styles.creatorName}>{actualChatData.createdBy || 'Anonymous'}</Text>
-              <Text style={styles.creationTime}>{actualChatData.createdAt || 'Recently'}</Text>
-            </View>
-
-            {/* Join Button with animation */}
-            <Animated.View style={{ 
-              transform: [{ scale: pulseAnim }],
-              width: '100%',
-            }}>
-              <TouchableOpacity 
-                style={styles.joinButton}
-                onPress={onJoin}
-              >
-                <LinearGradient
-                  colors={['#836CE8', '#4694FD']}
-                  style={styles.joinButtonGradient}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                >
-                  <Text style={styles.joinButtonText}>Join Chat</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </Animated.View>
+            {/* View Chat Button */}
+            <TouchableOpacity 
+              style={styles.viewChatButton}
+              onPress={onJoin}
+            >
+              <Text style={styles.viewChatButtonText}>View Chat</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
@@ -230,17 +230,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
+    paddingTop: 5,
+    paddingBottom: 0,
   },
-  closeButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#EAF2F9',
-    alignItems: 'center',
-    justifyContent: 'center',
+  grabber: {
+    width: 36,
+    height: 5,
+    resizeMode: 'contain',
   },
   scrollView: {
     flex: 1,
@@ -251,50 +247,67 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: 200,
-    borderRadius: 16,
+    height: 245,
+    borderRadius: 22,
     overflow: 'hidden',
     marginBottom: 20,
     position: 'relative',
-    borderWidth: 3,
-    borderColor: 'transparent',
+    marginTop: -10,
   },
   headerImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 16,
-  },
-  imageOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: 16,
+    borderRadius: 22,
   },
   imageGradient: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: 80,
+    height: 100,
   },
-  participantsContainer: {
+  pillsContainer: {
     position: 'absolute',
-    top: 15,
-    right: 15,
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 12,
+    zIndex: 10,
   },
-  participantsBadge: {
-    backgroundColor: '#0B228C',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 100,
+  pillsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: '100%',
   },
-  participantsText: {
-    color: '#FFFFFF',
+  leftPillWrapper: {
+    height: 28,
+    justifyContent: 'center',
+  },
+  rightPillWrapper: {
+    height: 28,
+    justifyContent: 'center',
+  },
+  pill: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    height: 28,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 50,
+    overflow: 'hidden',
+  },
+  pillText: {
+    fontFamily: 'DMSans-SemiBold',
+    fontStyle: 'normal',
     fontWeight: '600',
     fontSize: 14,
-    fontFamily: 'DMSans-Medium',
+    lineHeight: 20,
+    color: '#FFFFFF',
+    letterSpacing: -0.015 * 14,
+    textAlign: 'center',
   },
   chatName: {
     fontSize: 24,
@@ -303,116 +316,132 @@ const styles = StyleSheet.create({
     color: '#000',
     fontFamily: 'DMSans-Bold',
   },
-  locationContainer: {
+  description: {
+    width: '100%',
+    fontFamily: 'DMSans-Regular',
+    fontStyle: 'normal',
+    fontWeight: '400',
+    fontSize: 16,
+    lineHeight: 20,
+    letterSpacing: -0.01 * 16,
+    color: 'rgba(0, 0, 0, 0.5)',
+    marginBottom: 16,
+  },
+  locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    width: '100%',
+    height: 28,
+    marginBottom: 16,
+    gap: 8,
+  },
+  locationIcon: {
+    width: 28,
+    height: 28,
   },
   locationText: {
-    fontSize: 15,
-    color: '#555',
-    marginLeft: 5,
-    fontFamily: 'DMSans-Regular',
-  },
-  metaContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    padding: 15,
-    backgroundColor: '#F8F9FA',
-    borderRadius: 12,
-  },
-  metaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
     flex: 1,
+    fontFamily: 'DMSans-SemiBold',
+    fontStyle: 'normal',
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 24,
+    letterSpacing: -0.01 * 16,
+    color: '#000000',
   },
-  metaText: {
-    fontSize: 14,
-    color: '#555',
-    marginLeft: 5,
-    fontFamily: 'DMSans-Regular',
-  },
-  metaDivider: {
-    width: 1,
-    height: 24,
-    backgroundColor: '#DDD',
-    marginHorizontal: 10,
-  },
-  tagsContainer: {
+  interestTagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 20,
+    marginBottom: 24,
+    gap: 8,
   },
   tagItem: {
     backgroundColor: '#EAF2F9',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 100,
-    marginRight: 10,
-    marginBottom: 10,
   },
   tagText: {
     fontSize: 14,
-    color: '#0B228C',
+    color: '#000000',
     fontFamily: 'DMSans-Medium',
   },
-  descriptionContainer: {
-    marginBottom: 25,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 10,
-    fontFamily: 'DMSans-Medium',
-  },
-  descriptionText: {
-    fontSize: 15,
-    lineHeight: 24,
-    color: '#555',
-    fontFamily: 'DMSans-Regular',
-  },
-  creatorContainer: {
-    backgroundColor: '#F8F9FA',
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 30,
-  },
-  creatorLabel: {
-    fontSize: 14,
-    color: '#888',
-    marginBottom: 5,
-    fontFamily: 'DMSans-Regular',
-  },
-  creatorName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
-    fontFamily: 'DMSans-Medium',
-  },
-  creationTime: {
-    fontSize: 14,
-    color: '#888',
-    fontFamily: 'DMSans-Regular',
-  },
-  joinButton: {
+  viewChatButton: {
     width: '100%',
     height: 50,
-    borderRadius: 50,
-    overflow: 'hidden',
-    marginBottom: 10,
-  },
-  joinButtonGradient: {
-    width: '100%',
-    height: '100%',
+    borderRadius: 25,
+    backgroundColor: '#0B228C',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 24,
   },
-  joinButtonText: {
+  viewChatButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
     fontFamily: 'DMSans-Medium',
+  },
+  groupNameRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    height: 36,
+    marginBottom: 10,
+    gap: 6,
+  },
+  avatarsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    height: 36,
+  },
+  plusCount: {
+    fontFamily: 'DMSans-Medium',
+    fontSize: 13,
+    color: '#000',
+    fontWeight: '500',
+    marginRight: 4,
+  },
+  avatarsStack: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 68,
+    height: 36,
+    position: 'relative',
+  },
+  avatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#EAF2F9',
+    borderWidth: 2,
+    borderColor: '#fff',
+    position: 'absolute',
+    left: 0,
+    top: 4,
+    zIndex: 1,
+  },
+  avatarCenter: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#EAF2F9',
+    borderWidth: 2,
+    borderColor: '#fff',
+    position: 'absolute',
+    left: 18,
+    top: 2,
+    zIndex: 3,
+  },
+  avatar2: {
+    left: 18,
+    zIndex: 2,
+  },
+  avatar3: {
+    left: 40,
+    top: 4,
+    zIndex: 1,
   },
 });
 

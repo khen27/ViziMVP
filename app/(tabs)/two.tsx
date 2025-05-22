@@ -10,11 +10,13 @@ import {
   Image,
   ImageBackground,
   FlatList,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { getWidgetImageByIndex } from '../utils/imageUtils';
 import { ChatDataContext } from '../context/ChatDataContext';
+import { BlurView } from 'expo-blur';
 
 // Type definitions for chat data
 interface User {
@@ -173,34 +175,7 @@ export default function TabTwoScreen() {
     },
   ];
   
-  // Use dynamic chats if available, otherwise fallback to static chats
-  // Add placeholder chats if we have fewer than 4 dynamic chats
-  if (dynamicChats.length > 0 && dynamicChats.length < 4) {
-    // Calculate how many placeholder chats we need
-    const placeholdersNeeded = 4 - dynamicChats.length;
-    
-    // Use the existing fallback chats as placeholders
-    for (let i = 0; i < placeholdersNeeded && i < fallbackChats.length; i++) {
-      // Ensure the lastMessage has all required properties
-      const lastMsg = {
-        id: fallbackChats[i].lastMessage.id,
-        text: fallbackChats[i].lastMessage.text || '',
-        timestamp: fallbackChats[i].lastMessage.timestamp,
-        unreadCount: fallbackChats[i].lastMessage.unreadCount || undefined
-      };
-      
-      dynamicChats.push({
-        id: `placeholder-${i}`, // Ensure unique IDs
-        title: fallbackChats[i].title,
-        image: fallbackChats[i].image,
-        borderColor: fallbackChats[i].borderColor || '#4694FD',
-        lastMessage: lastMsg,
-        participants: fallbackChats[i].participants || '5',
-      });
-    }
-  }
-  
-  const chats = dynamicChats.length > 0 ? dynamicChats : fallbackChats;
+  const chats = dynamicChats;
 
   // Renders a user avatar with name
   const renderUser = ({item}: {item: User}) => (
@@ -214,10 +189,28 @@ export default function TabTwoScreen() {
   const renderChatItem = ({item}: {item: Chat}) => (
     <View style={styles.chatItemContainer}>
       <View style={styles.chatImageWrapper}>
-        {item.borderColor && (
-          <View style={[styles.chatImageBorder, { backgroundColor: item.borderColor }]} />
-        )}
-        <Image source={item.image} style={styles.chatImage} />
+        <Image source={item.image} style={styles.chatImage} resizeMode="cover" />
+        
+        {/* Add audience and age range pills if available */}
+        <View style={styles.chatImagePillsContainer}>
+          <View style={styles.chatImagePillsRow}>
+            {/* Left pill could show audience or group type */}
+            {item.borderColor && (
+              <View style={styles.pillWrapper}>
+                <View style={styles.pill}>
+                  <Text style={styles.pillText}>Group</Text>
+                </View>
+              </View>
+            )}
+            
+            {/* Right pill could show age range */}
+            <View style={styles.pillWrapper}>
+              <View style={styles.pill}>
+                <Text style={styles.pillText}>18yr ›</Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
       
       <View style={styles.chatContent}>
@@ -339,14 +332,26 @@ export default function TabTwoScreen() {
           {/* Main chat list */}
           <ScrollView
             style={styles.chatListContainer}
-            contentContainerStyle={styles.chatListContent}
+            contentContainerStyle={[
+              styles.chatListContent,
+              chats.length === 0 && styles.emptyChatListContent
+            ]}
             showsVerticalScrollIndicator={false}
           >
-            {chats.map((chat) => (
-              <TouchableOpacity key={chat.id} activeOpacity={0.7}>
-                {renderChatItem({item: chat})}
-              </TouchableOpacity>
-            ))}
+            {chats.length > 0 ? (
+              chats.map((chat) => (
+                <TouchableOpacity key={chat.id} activeOpacity={0.7}>
+                  {renderChatItem({item: chat})}
+                </TouchableOpacity>
+              ))
+            ) : (
+              <View style={styles.emptyStateContainer}>
+                <Text style={styles.emptyStateTitle}>No Chats Yet</Text>
+                <Text style={styles.emptyStateMessage}>
+                  Create a group chat on the map tab to get started!
+                </Text>
+              </View>
+            )}
           </ScrollView>
           
           {/* Add gradient overlay */}
@@ -477,6 +482,57 @@ const styles = StyleSheet.create({
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 22,
+    overflow: 'hidden',
+    padding: 0,
+  },
+  chatImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 22,
+  },
+  chatImagePillsContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 4,
+    zIndex: 10,
+    gap: 8,
+  },
+  chatImagePillsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: '100%',
+    height: 20,
+    gap: 4,
+  },
+  pillWrapper: {
+    height: 20,
+    justifyContent: 'center',
+  },
+  pill: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    minWidth: 40,
+    height: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 50,
+    overflow: 'hidden',
+  },
+  pillText: {
+    fontFamily: 'DMSans-SemiBold',
+    fontStyle: 'normal',
+    fontWeight: '600',
+    fontSize: 10,
+    lineHeight: 14,
+    color: '#FFFFFF',
+    letterSpacing: -0.01 * 10,
+    textAlign: 'center',
   },
   chatImageBorder: {
     width: 72,
@@ -484,12 +540,6 @@ const styles = StyleSheet.create({
     borderRadius: 36,
     position: 'absolute',
     transform: [{rotate: '-90deg'}],
-  },
-  chatImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FFFFFF',
   },
   chatContent: {
     flex: 1,
@@ -593,5 +643,31 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
     zIndex: 20,
+  },
+  emptyChatListContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 50,
+  },
+  emptyStateContainer: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyStateTitle: {
+    fontFamily: 'DMSans-Medium',
+    fontSize: 24,
+    lineHeight: 32,
+    color: '#0B228C',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  emptyStateMessage: {
+    fontFamily: 'DMSans-Regular',
+    fontSize: 16,
+    lineHeight: 24,
+    color: 'rgba(0, 0, 0, 0.6)',
+    textAlign: 'center',
   },
 });
