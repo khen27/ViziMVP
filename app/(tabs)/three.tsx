@@ -23,6 +23,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import EmojiRating from '@/app/components/EmojiRating';
 import i18n from '@/app/utils/i18n';
 import { collection, addDoc, serverTimestamp, db, app } from '@/app/utils/firebase';
+import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import Toast from '@/app/components/Toast';
 
@@ -284,19 +285,19 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 180, // Increased padding to avoid tab bar overlap
+    paddingBottom: 220, // Increased padding to ensure Submit button isn't clipped
   },
   content: {
     flex: 1,
     alignItems: 'center',
     padding: 20,
-    paddingTop: 40,
+    paddingTop: 30,
   },
   header: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   title: {
     fontSize: 32,
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    marginTop: 30,
+    marginTop: 20,
   },
   textInput: {
     height: 215,
