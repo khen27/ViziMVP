@@ -138,13 +138,13 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: 'transparent', justifyContent: 'flex-start' }}>
         <TouchableOpacity 
-          style={{ flex: 1 }}
+          style={{ flex: 1, position: 'absolute', width: '100%', height: '100%' }}
           activeOpacity={1}
           onPress={onClose}
         />
-        <View style={[styles.container, { paddingBottom: 60 + insets.bottom }]}>
+        <View style={styles.container}>
           {/* Header with Grabber */}
           <View style={styles.grabber} />
           
@@ -247,6 +247,7 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
             >
               <Text style={styles.viewChatButtonText}>View Chat</Text>
             </TouchableOpacity>
+            <View style={{ height: 20 }} />
           </ScrollView>
         </View>
       </View>
@@ -257,20 +258,21 @@ const ChatDetailsModal: React.FC<ChatDetailsModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
+    top: 180,
     left: 0,
     right: 0,
-    height: 'auto',
-    maxHeight: '85%',
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
     shadowColor: 'rgba(9,65,115,0.15)',
     shadowOffset: { width: 0, height: -8 },
     shadowRadius: 60,
     elevation: 10,    // for Android
     paddingTop: 0,
     zIndex: 100,
+    height: 'auto',
   },
   grabber: {
     width: 36,
@@ -285,11 +287,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 30,
+    paddingBottom: 0, // no extra padding at the bottom
   },
   imageContainer: {
     width: '100%',
-    height: 245,
+    height: 225,
     borderRadius: 22,
     overflow: 'hidden',
     marginBottom: 20,
@@ -394,7 +396,7 @@ const styles = StyleSheet.create({
   interestTagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 24,
+    marginBottom: 10,
     gap: 8,
   },
   tagItem: {
@@ -415,7 +417,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0B228C',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 0, // no margin below the button
     shadowColor: '#0B228C',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
