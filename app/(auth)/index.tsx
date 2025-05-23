@@ -40,7 +40,7 @@ export default function SignIn() {
       // Navigate to main app screen after a short delay
       setTimeout(() => {
         setIsLoading(false);
-        router.push('/(tabs)');
+        router.push('/name');
       }, 1000);
       
     } catch (error) {

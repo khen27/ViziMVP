@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: 'DMSans-Regular',
     fontSize: 16,
     lineHeight: 20,
     letterSpacing: -0.015,
