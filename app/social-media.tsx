@@ -14,7 +14,7 @@ export default function SocialMediaScreen() {
       setShowToast(true);
       return;
     }
-    router.push('/(tabs)'); // Navigate to main app tabs
+    router.push('/interests'); // Go to interests selection
   };
 
   return (
