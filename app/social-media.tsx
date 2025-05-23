@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, Stack } from 'expo-router';
+import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
 import Toast from './components/Toast';
 
 export default function SocialMediaScreen() {
   const [instagram, setInstagram] = useState('');
   const [showToast, setShowToast] = useState(false);
   const router = useRouter();
+  const { name } = useLocalSearchParams();
 
   const handleContinue = () => {
     if (!instagram.trim()) {
       setShowToast(true);
       return;
     }
-    router.push('/interests'); // Go to interests selection
+    router.push({
+      pathname: '/interests',
+      params: { name }
+    });
   };
 
   return (

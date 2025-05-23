@@ -13,7 +13,7 @@ import {
   Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, Stack } from 'expo-router';
+import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
 
 interface Interest {
   id: string;
@@ -93,6 +93,7 @@ export default function InterestsScreen() {
   const [currentCategory, setCurrentCategory] = useState<string>('All Interests');
   const [showCategoryDropdown, setShowCategoryDropdown] = useState<boolean>(false);
   const router = useRouter();
+  const { name } = useLocalSearchParams();
 
   const toggleInterest = (interestId: string) => {
     const newSelected = new Set(selectedInterests);
@@ -125,7 +126,10 @@ export default function InterestsScreen() {
 
   const handleConfirm = () => {
     if (selectedInterests.size >= 10) {
-      router.push('/(tabs)');
+      router.push({
+        pathname: '/welcome',
+        params: { name }
+      });
     }
   };
 

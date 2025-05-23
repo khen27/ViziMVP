@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Modal, FlatList, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, Stack } from 'expo-router';
+import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
 import Toast from './components/Toast';
 
 const months = [
@@ -78,6 +78,7 @@ export default function AgeVerification() {
   const [year, setYear] = useState(currentYear - 18);
   const [showToast, setShowToast] = useState(false);
   const router = useRouter();
+  const { name } = useLocalSearchParams();
 
   const handleConfirm = () => {
     const birthday = new Date(`${month} ${day}, ${year}`);
@@ -88,7 +89,10 @@ export default function AgeVerification() {
       setShowToast(true);
       return;
     }
-    router.push('/social-media');
+    router.push({
+      pathname: '/social-media',
+      params: { name }
+    });
   };
 
   return (
