@@ -10,11 +10,11 @@ interface EmojiRatingProps {
 
 const EmojiRating: React.FC<EmojiRatingProps> = ({ selectedEmoji, onSelect }) => {
   const emojis = [
-    { icon: '😭', labelKey: 'feedback.emojis.poor' },
-    { icon: '😔', labelKey: 'feedback.emojis.fair' },
-    { icon: '😐', labelKey: 'feedback.emojis.okay' },
-    { icon: '🙂', labelKey: 'feedback.emojis.good' },
-    { icon: '🥰', labelKey: 'feedback.emojis.perfect' },
+    { icon: '😞', labelKey: 'feedback.emojis.poor' },
+    { icon: '😐', labelKey: 'feedback.emojis.fair' },
+    { icon: '🙂', labelKey: 'feedback.emojis.okay' },
+    { icon: '😇', labelKey: 'feedback.emojis.good' },
+    { icon: '🤩', labelKey: 'feedback.emojis.perfect' },
   ];
 
   // Function to render SVG for selected emoji
