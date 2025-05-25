@@ -127,7 +127,7 @@ export default function InterestsScreen() {
   const handleConfirm = () => {
     if (selectedInterests.size >= 10) {
       router.push({
-        pathname: '/welcome',
+        pathname: '/profile-photo',
         params: { name }
       });
     }

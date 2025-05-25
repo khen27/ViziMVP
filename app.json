@@ -21,6 +21,9 @@
         "googleSignIn": {
           "reservedClientId": "201475157735-oerh1aujmolg0ckmsas2sc0740i25b2a.apps.googleusercontent.com"
         }
+      },
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to let you upload a profile picture."
       }
     },
     "android": {
