@@ -16,7 +16,7 @@ export default function SocialMediaScreen() {
       return;
     }
     router.push({
-      pathname: '/interests',
+      pathname: '/home-city',
       params: { name }
     });
   };
