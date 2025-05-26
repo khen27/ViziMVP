@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Modal, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Modal, FlatList, Image, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
-import Toast from './components/Toast';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -73,22 +72,19 @@ function CustomDropdown({ label, value, options, onSelect }: CustomDropdownProps
 }
 
 export default function AgeVerification() {
-  const [month, setMonth] = useState('January');
-  const [day, setDay] = useState(1);
-  const [year, setYear] = useState(currentYear - 18);
-  const [showToast, setShowToast] = useState(false);
+  const [age, setAge] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
   const { name } = useLocalSearchParams();
 
   const handleConfirm = () => {
-    const birthday = new Date(`${month} ${day}, ${year}`);
-    const ageDifMs = Date.now() - birthday.getTime();
-    const ageDate = new Date(ageDifMs);
-    const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-    if (age < 18) {
-      setShowToast(true);
+    console.log('Current date:', new Date().toISOString());
+    const numericAge = parseInt(age, 10);
+    if (isNaN(numericAge) || numericAge < 18) {
+      setError('You must be 18 or older to proceed');
       return;
     }
+    setError('');
     router.push({
       pathname: '/social-media',
       params: { name }
@@ -110,30 +106,29 @@ export default function AgeVerification() {
               <View style={styles.backIcon} />
             </TouchableOpacity>
             <View style={styles.headerSection}>
-              <Text style={styles.title}>When is your Birthday?</Text>
+              <Text style={styles.title}>How old are you?</Text>
               <Text style={styles.subtitle}>Please take a moment to verify that you are at least 18 years old.</Text>
             </View>
             <View style={styles.pickerSection}>
-              <CustomDropdown label="Month" value={month} options={months} onSelect={val => setMonth(val as string)} />
-              <CustomDropdown label="Day" value={day} options={days} onSelect={val => setDay(Number(val))} />
-              <CustomDropdown label="Year" value={year} options={years} onSelect={val => setYear(Number(val))} />
+              <Text style={styles.pickerLabel}>Age</Text>
+              <TextInput
+                style={styles.ageInput}
+                value={age}
+                onChangeText={text => {
+                  setAge(text);
+                  if (error) setError('');
+                }}
+                keyboardType="numeric"
+                maxLength={3}
+                placeholder="Enter your age"
+                placeholderTextColor="#ACACAC"
+              />
+              {error ? <Text style={styles.error}>{error}</Text> : null}
             </View>
             <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
               <Text style={styles.confirmButtonText}>Confirm</Text>
             </TouchableOpacity>
           </View>
-          <Toast
-            visible={showToast}
-            message="You must be 18 years old"
-            onHide={() => setShowToast(false)}
-            icon={<Image source={require('../assets/icons/icon-danger.png')} style={{ width: 20, height: 20 }} />}
-            backgroundColor="#FFFFFF"
-            borderColor="rgba(237, 83, 112, 0.2)"
-            shadowColor="rgba(248, 92, 58, 0.1)"
-            textColor="#ED5370"
-            topOffset={51}
-            duration={3000}
-          />
         </SafeAreaView>
       </LinearGradient>
     </>
@@ -344,5 +339,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     letterSpacing: -0.015 * 16,
+  },
+  ageInput: {
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: 'rgba(216, 216, 216, 0.3)',
+    borderRadius: 25,
+    height: 50,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    color: '#000',
+    fontFamily: 'DMSans-Regular',
+    marginBottom: 12,
+    shadowColor: 'rgba(9, 65, 115, 0.1)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    shadowOpacity: 0.1,
+    elevation: 2,
   },
 }); 
