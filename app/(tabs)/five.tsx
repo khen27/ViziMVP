@@ -1,11 +1,33 @@
-import { StyleSheet, SafeAreaView, StatusBar, Image, TouchableOpacity, Text, ImageBackground } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Image, TouchableOpacity, Text, ImageBackground, Share } from 'react-native';
 import { View } from '@/components/Themed';
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useRef } from 'react';
 import { ScrollView } from 'react-native';
 import Svg, { Path, Rect, Mask, G, Defs, Filter, FeFlood, FeColorMatrix, FeOffset, FeBlend, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
+import ViewShot, { captureRef } from 'react-native-view-shot';
 
 export default function TabFiveScreen() {
+  const viewShotRef = useRef<ViewShot>(null);
+
+  const handleShare = async () => {
+    try {
+      if (!viewShotRef.current) {
+        console.error("ViewShot ref is not available");
+        return;
+      }
+      const uri = await captureRef(viewShotRef, {
+        format: 'png',
+        quality: 1,
+      });
+      await Share.share({
+        url: uri,
+        message: "Hey, this is my profile on Vizi! You should join me ✨"
+      });
+    } catch (error) {
+      console.error("Error sharing profile:", error);
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <LinearGradient
@@ -14,7 +36,7 @@ export default function TabFiveScreen() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
       >
-        <View style={styles.contentContainer}>
+        <ViewShot ref={viewShotRef} style={styles.contentContainer}>
           <StatusBar barStyle="light-content" />
           
           {/* Header/Background Image */}
@@ -125,21 +147,21 @@ export default function TabFiveScreen() {
                       <TouchableOpacity style={styles.editButton}>
                         <Text style={styles.editButtonText}>Edit Profile</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.shareButton}>
+                      <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
                         <Text style={styles.shareButtonText}>Share Profile</Text>
                       </TouchableOpacity>
                     </View>
                     
                     {/* Bio text */}
                     <Text style={styles.bioText}>
-                      I’m a multi-faceted startup founder and USA expat 🇨🇿 always chasing new PRs 🏋️‍♂️ and passport stamps 🌍✈️. I speak English, Spanish, and some Czech. Fueled by bubble tea 🧋 and weekend brunch mimosas 🥂, I thrive on spontaneous night-train escapes 🚆 or impromptu road-trip adventures 🚗💨. My year splits between snowboarding 🏂 in winter and mastering wake-boarding & swimming laps 🏊‍♂️ in summer—balanced out by sauna & jacuzzi recovery sessions 🧖‍♂️💦. Whether I’m dialing in Olympic lifts, firing up the barbecue 🍖🔥, or diving into the latest anime binge 🎌, I live for an active, entrepreneurial life. Let’s turn every moment into our next epic story! 🔥✨
+                      I'm a multi-faceted startup founder and USA expat 🇨🇿 always chasing new PRs 🏋️‍♂️ and passport stamps 🌍✈️. I speak English, Spanish, and some Czech. Fueled by bubble tea 🧋 and weekend brunch mimosas 🥂, I thrive on spontaneous night-train escapes 🚆 or impromptu road-trip adventures 🚗💨. My year splits between snowboarding 🏂 in winter and mastering wake-boarding & swimming laps 🏊‍♂️ in summer—balanced out by sauna & jacuzzi recovery sessions 🧖‍♂️💦. Whether I'm dialing in Olympic lifts, firing up the barbecue 🍖🔥, or diving into the latest anime binge 🎌, I live for an active, entrepreneurial life. Let's turn every moment into our next epic story! 🔥✨
                     </Text>
                   </View>
                 </View>
               </ScrollView>
             </SafeAreaView>
           </View>
-        </View>
+        </ViewShot>
         
         <View style={styles.homeIndicator} />
       </LinearGradient>
