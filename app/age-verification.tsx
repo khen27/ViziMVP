@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Modal, FlatList, Image, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, SafeAreaView, ScrollView, Modal, FlatList, Image, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
 
@@ -94,43 +94,49 @@ export default function AgeVerification() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <LinearGradient
-        colors={["#836CE8", "#4694FD"]}
-        style={styles.gradient}
-        start={{ x: 0.24, y: 0.78 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <SafeAreaView style={{ flex: 1 }}>
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-              <View style={styles.backIcon} />
-            </TouchableOpacity>
-            <View style={styles.headerSection}>
-              <Text style={styles.title}>How old are you?</Text>
-              <Text style={styles.subtitle}>Please take a moment to verify that you are at least 18 years old.</Text>
-            </View>
-            <View style={styles.pickerSection}>
-              <Text style={styles.pickerLabel}>Age</Text>
-              <TextInput
-                style={styles.ageInput}
-                value={age}
-                onChangeText={text => {
-                  setAge(text);
-                  if (error) setError('');
-                }}
-                keyboardType="numeric"
-                maxLength={3}
-                placeholder="Enter your age"
-                placeholderTextColor="#ACACAC"
-              />
-              {error ? <Text style={styles.error}>{error}</Text> : null}
-            </View>
-            <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
-              <Text style={styles.confirmButtonText}>Confirm</Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </LinearGradient>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={{ flex: 1 }}>
+          <LinearGradient
+            colors={["#836CE8", "#4694FD"]}
+            style={styles.gradient}
+            start={{ x: 0.24, y: 0.78 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <SafeAreaView style={{ flex: 1 }}>
+              <View style={styles.card}>
+                <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+                  <View style={styles.backIcon} />
+                </TouchableOpacity>
+                <View style={styles.headerSection}>
+                  <Text style={styles.title}>How old are you?</Text>
+                  <Text style={styles.subtitle}>Please take a moment to verify that you are at least 18 years old.</Text>
+                </View>
+                <View style={styles.pickerSection}>
+                  <Text style={styles.pickerLabel}>Age</Text>
+                  <TextInput
+                    style={styles.ageInput}
+                    value={age}
+                    onChangeText={text => {
+                      setAge(text);
+                      if (error) setError('');
+                    }}
+                    keyboardType="numeric"
+                    maxLength={3}
+                    placeholder="Enter your age"
+                    placeholderTextColor="#ACACAC"
+                    blurOnSubmit={true}
+                    returnKeyType="done"
+                  />
+                  {error ? <Text style={styles.error}>{error}</Text> : null}
+                </View>
+                <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
+                  <Text style={styles.confirmButtonText}>Confirm</Text>
+                </TouchableOpacity>
+              </View>
+            </SafeAreaView>
+          </LinearGradient>
+        </View>
+      </TouchableWithoutFeedback>
     </>
   );
 }
