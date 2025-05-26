@@ -1,0 +1,16 @@
+{
+  "feedback": {
+    "title": "How was your experience?",
+    "subtitle": "Your feedback helps us improve the app for everyone.",
+    "textInputPlaceholder": "Tell us what you think...",
+    "submit": "Submit Feedback",
+    "contactMe": "Contact me about my feedback",
+    "emojis": {
+      "poor": "Poor",
+      "fair": "Fair",
+      "okay": "Okay",
+      "good": "Good",
+      "perfect": "Perfect"
+    }
+  }
+} 

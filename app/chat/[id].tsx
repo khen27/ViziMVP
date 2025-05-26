@@ -15,8 +15,8 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ChatDataContext } from '../context/ChatDataContext';
-import { getWidgetImageByIndex } from '../utils/imageUtils';
+import { ChatDataContext } from '@/context/ChatDataContext';
+import { getWidgetImageByIndex } from '@/utils/imageUtils';
 
 // Border colors matching GroupChatMarker in other components
 const BORDER_COLORS = ['#FFA300', '#4694FD', '#ED5370'];
@@ -71,7 +71,7 @@ export default function ChatScreen() {
       }
     }
     // Fallback image
-    return require('../../assets/paddleboarding.png');
+    return require('@/assets/paddleboarding.png');
   };
   
   // Determine border color
@@ -103,7 +103,7 @@ export default function ChatScreen() {
             text: 'Hey everyone! Looking forward to our beach brunch this weekend!',
             sender: 'Martin',
             timestamp: '10:30 AM',
-            senderImage: require('../../assets/people/image-1.png'),
+            senderImage: require('@/assets/people/image-1.png'),
             isMine: false,
             reactions: [],
           },
@@ -112,7 +112,7 @@ export default function ChatScreen() {
             text: 'Me too! Should I bring anything?',
             sender: 'Julia',
             timestamp: '10:35 AM',
-            senderImage: require('../../assets/people/image-3.png'),
+            senderImage: require('@/assets/people/image-3.png'),
             isMine: false,
             reactions: [],
           },
@@ -121,7 +121,7 @@ export default function ChatScreen() {
             text: 'Just bring yourself! I\'ll handle the food.',
             sender: 'Martin',
             timestamp: '10:40 AM',
-            senderImage: require('../../assets/people/image-1.png'),
+            senderImage: require('@/assets/people/image-1.png'),
             isMine: false,
             reactions: [],
           },
@@ -130,7 +130,7 @@ export default function ChatScreen() {
             text: 'I will if the weather is sunny. Yesterday, at sunrise, there were some great 🔥🔥 photos.',
             timestamp: '11:10 AM',
             sender: 'Mike',
-            senderImage: require('../../assets/people/image-2.png'),
+            senderImage: require('@/assets/people/image-2.png'),
             isMine: true,
             reactions: [
               { emoji: '😍', count: 4 },
@@ -142,7 +142,7 @@ export default function ChatScreen() {
             text: 'Super! Is there another photo showing manatees and 🐬 dolphins? I want to show my friends.',
             sender: 'Julia',
             timestamp: '11:14 AM',
-            senderImage: require('../../assets/people/image-3.png'),
+            senderImage: require('@/assets/people/image-3.png'),
             isMine: false,
             reactions: [],
           },
@@ -167,11 +167,11 @@ export default function ChatScreen() {
   }, [chatMarker]);
 
   const participantList = [
-    { name: 'Martin', image: require('../../assets/people/image-1.png') },
-    { name: 'Mike', image: require('../../assets/people/image-2.png') },
-    { name: 'Julia', image: require('../../assets/people/image-3.png') },
-    { name: 'Mia', image: require('../../assets/people/image-4.png') },
-    { name: 'Demi', image: require('../../assets/people/image-5.png') },
+    { name: 'Martin', image: require('@/assets/people/image-1.png') },
+    { name: 'Mike', image: require('@/assets/people/image-2.png') },
+    { name: 'Julia', image: require('@/assets/people/image-3.png') },
+    { name: 'Mia', image: require('@/assets/people/image-4.png') },
+    { name: 'Demi', image: require('@/assets/people/image-5.png') },
   ];
 
   // For individual chat, always reply as the person
@@ -215,7 +215,7 @@ export default function ChatScreen() {
           isMine: true,
           timestamp,
           sender: 'You',
-          senderImage: require('../../assets/people/image-2.png'),
+          senderImage: require('@/assets/people/image-2.png'),
           reactions: [],
         }
       ]));
@@ -441,7 +441,7 @@ export default function ChatScreen() {
             />
             
             <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-              <Image source={require('../../assets/icons/icon-microphone.png')} style={styles.microphoneIcon} />
+              <Image source={require('@/assets/icons/icon-microphone.png')} style={styles.microphoneIcon} />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>

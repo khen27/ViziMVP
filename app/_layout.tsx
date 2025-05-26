@@ -5,12 +5,13 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
-import { Platform, LogBox, AppRegistry, View, useColorScheme } from 'react-native';
+import { Platform, LogBox, AppRegistry, View } from 'react-native';
 import Constants from 'expo-constants';
-import ChatDataProvider from './context/ChatDataContext';
-import { AuthProvider } from './context/AuthContext';
-import SplashScreenComponent from './components/SplashScreen';
-import { InterestsProvider } from './context/InterestsContext';
+import ChatDataProvider from '@/context/ChatDataContext';
+import { AuthProvider } from 'context/AuthContext';
+import SplashScreenComponent from '@/components/SplashScreen';
+import { InterestsProvider } from 'context/InterestsContext';
+import useColorScheme from 'theme/useColorScheme';
 import {
   useFonts as useDMSans,
   DMSans_400Regular,

@@ -31,7 +31,7 @@ export default function WelcomeScreen() {
             <View style={styles.content}>
               <View style={styles.iconContainer}>
                 <Image 
-                  source={require('../assets/icons/icon-vizi-onboard-final.png')}
+                  source={require('@/assets/icons/icon-vizi-onboard-final.png')}
                   style={styles.icon}
                   resizeMode="contain"
                 />

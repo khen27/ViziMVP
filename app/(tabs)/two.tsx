@@ -15,8 +15,8 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, Rect } from 'react-native-svg';
-import { getWidgetImageByIndex } from '../utils/imageUtils';
-import { ChatDataContext } from '../context/ChatDataContext';
+import { getWidgetImageByIndex } from '@/utils/imageUtils';
+import { ChatDataContext } from '@/context/ChatDataContext';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -56,12 +56,12 @@ export default function TabTwoScreen() {
   
   // Featured users at the top
   const users: User[] = [
-    { id: '1', name: 'Martin', image: require('../../assets/people/image-1.png') },
-    { id: '2', name: 'Mike', image: require('../../assets/people/image-2.png') },
-    { id: '3', name: 'Julia', image: require('../../assets/people/image-3.png') },
-    { id: '4', name: 'Mia', image: require('../../assets/people/image-4.png') },
-    { id: '5', name: 'Demi', image: require('../../assets/people/image-5.png') },
-    { id: '6', name: 'Brian', image: require('../../assets/people/image.png') },
+    { id: '1', name: 'Martin', image: require('@/assets/people/image-1.png') },
+    { id: '2', name: 'Mike', image: require('@/assets/people/image-2.png') },
+    { id: '3', name: 'Julia', image: require('@/assets/people/image-3.png') },
+    { id: '4', name: 'Mia', image: require('@/assets/people/image-4.png') },
+    { id: '5', name: 'Demi', image: require('@/assets/people/image-5.png') },
+    { id: '6', name: 'Brian', image: require('@/assets/people/image.png') },
   ];
 
   // Convert chatMarkers to chat list items
@@ -72,7 +72,7 @@ export default function TabTwoScreen() {
     
     // Determine which image to use
     const image = marker.imageIndex !== undefined ? 
-      getWidgetImageByIndex(marker.imageIndex) : require('../../assets/paddleboarding.png');
+      getWidgetImageByIndex(marker.imageIndex) : require('@/assets/paddleboarding.png');
     
     // Random message texts for variety
     const messageTexts = [
@@ -113,7 +113,7 @@ export default function TabTwoScreen() {
     {
       id: '1',
       title: 'Paddleboarding',
-      image: require('../../assets/paddleboarding.png'),
+      image: require('@/assets/paddleboarding.png'),
       borderColor: '#ED5370',
       lastMessage: {
         id: 'm1',
@@ -124,7 +124,7 @@ export default function TabTwoScreen() {
     {
       id: '2',
       title: 'Morning Walk🏃',
-      image: require('../../assets/morning-walk.png'),
+      image: require('@/assets/morning-walk.png'),
       borderColor: '#4694FD',
       lastMessage: {
         id: 'm2',
@@ -137,7 +137,7 @@ export default function TabTwoScreen() {
     {
       id: '3',
       title: 'Olivia Mercado',
-      image: require('../../assets/olivia.png'),
+      image: require('@/assets/olivia.png'),
       lastMessage: {
         id: 'm3',
         text: 'Lets create a group for trip with ot...',
@@ -148,7 +148,7 @@ export default function TabTwoScreen() {
     {
       id: '4',
       title: 'Miami Slice',
-      image: require('../../assets/miami-slice.png'),
+      image: require('@/assets/miami-slice.png'),
       borderColor: '#FFA300',
       lastMessage: {
         id: 'm4',
@@ -159,7 +159,7 @@ export default function TabTwoScreen() {
     {
       id: '5',
       title: 'Cuban Food Tour',
-      image: require('../../assets/cuban-food.png'),
+      image: require('@/assets/cuban-food.png'),
       borderColor: '#4694FD',
       lastMessage: {
         id: 'm5',
@@ -170,7 +170,7 @@ export default function TabTwoScreen() {
     {
       id: '6',
       title: 'Martin Pokorný',
-      image: require('../../assets/people/image-1.png'),
+      image: require('@/assets/people/image-1.png'),
       lastMessage: {
         id: 'm6',
         text: 'Ahoj, kde jsi?',

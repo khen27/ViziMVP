@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-import { useInterests } from './context/InterestsContext';
+import { useInterests } from 'context/InterestsContext';
 
 type Interest = {
   id: string;

@@ -4,8 +4,8 @@ import { Link, Tabs } from 'expo-router';
 import { Pressable, StyleSheet, View, Platform, Dimensions, Text, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import Colors from '@/constants/Colors';
-import { MapIcon, ChatIcon, HelpIcon, NotificationIcon, ProfileIcon } from '@/app/components/TabBarIcons';
+import Colors from '../../constants/Colors';
+import { MapIcon, ChatIcon, HelpIcon, NotificationIcon, ProfileIcon } from '../../components/TabBarIcons';
 
 // Get screen dimensions for precise positioning
 const { width: screenWidth } = Dimensions.get('window');

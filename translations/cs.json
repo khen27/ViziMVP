@@ -1,0 +1,16 @@
+{
+  "feedback": {
+    "title": "Jak se vám líbila aplikace?",
+    "subtitle": "Vaše zpětná vazba nám pomáhá zlepšovat aplikaci pro všechny.",
+    "textInputPlaceholder": "Řekněte nám svůj názor...",
+    "submit": "Odeslat zpětnou vazbu",
+    "contactMe": "Kontaktujte mě ohledně mé zpětné vazby",
+    "emojis": {
+      "poor": "Špatné",
+      "fair": "Ucházející",
+      "okay": "Dobré",
+      "good": "Skvělé",
+      "perfect": "Perfektní"
+    }
+  }
+} 
