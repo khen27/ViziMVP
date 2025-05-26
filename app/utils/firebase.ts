@@ -10,6 +10,8 @@ import {
   initializeFirestore,
   persistentLocalCache,
   persistentSingleTabManager,
+  enableMultiTabIndexedDbPersistence,
+  CACHE_SIZE_UNLIMITED,
   Firestore
 } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -26,17 +28,14 @@ try {
   
   // Initialize Firestore with better settings for mobile
   try {
-    if (Platform.OS === 'web') {
-      // Standard setup for web
-      db = getFirestore(app);
-    } else {
-      // Better setup for mobile with persistent cache
-      db = initializeFirestore(app, {
-        localCache: persistentLocalCache({
-          tabManager: persistentSingleTabManager({})
-        })
-      });
-    }
+    // Better setup for mobile with persistent cache
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentSingleTabManager({}),
+        cacheSizeBytes: CACHE_SIZE_UNLIMITED
+      })
+    });
+
     console.log('Firestore initialized successfully');
   } catch (error) {
     console.error('Error initializing Firestore:', error);

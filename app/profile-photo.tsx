@@ -3,12 +3,17 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Platform
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
+import { useUser } from './context/UserContext';
+import { db } from './utils/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function ProfilePhotoScreen() {
   const router = useRouter();
   const { name } = useLocalSearchParams();
+  const { setUserData } = useUser();
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const userId = 'testUser'; // Replace with real user ID if available
   
   // More reliable simulator detection
   const isSimulator = Platform.OS === 'ios' && !Platform.isPad && !Platform.isTV && process.env.NODE_ENV !== 'production';
@@ -38,20 +43,34 @@ export default function ProfilePhotoScreen() {
     }
   };
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     setUploading(true);
-    // Here you would upload the image to your backend or save to AsyncStorage
-    // For now, just pass the image URI to the next screen
+    
+    // Update context first
+    setUserData({ image });
+    console.log('[ONBOARDING] Profile image saved to context:', { image });
+
+    // Try to save to Firebase in the background
+    setDoc(doc(db, 'users', userId), {
+      image,
+    }, { merge: true })
+      .then(() => console.log('[FIREBASE] Profile image saved to Firestore'))
+      .catch(e => console.error('[FIREBASE] Failed to save profile image:', e));
+
+    // Always navigate, don't wait for Firebase
     router.push({
-      pathname: '/welcome',
+      pathname: '/add-bio',
       params: { name, image },
     });
     setUploading(false);
   };
 
   const handleSkip = () => {
+    // Update context with null image
+    setUserData({ image: null });
+    
     router.push({
-      pathname: '/welcome',
+      pathname: '/add-bio',
       params: { name },
     });
   };

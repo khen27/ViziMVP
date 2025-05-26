@@ -3,18 +3,36 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView, Imag
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, Stack } from 'expo-router';
 import Toast from './components/Toast';
+import { useUser } from './context/UserContext';
+import { db } from './utils/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function NameScreen() {
   const [name, setName] = useState('');
   const [showToast, setShowToast] = useState(false);
   const router = useRouter();
+  const { setUserData } = useUser();
+  const userId = 'testUser'; // Replace with real user ID if available
 
   const handleContinue = () => {
     if (!name.trim()) {
       setShowToast(true);
       return;
     }
-    router.push({ pathname: '/age-verification', params: { name } });
+
+    // Update context first
+    setUserData({ name: name.trim() });
+    console.log('[ONBOARDING] Name saved to context:', { name: name.trim() });
+
+    // Try to save to Firebase in the background
+    setDoc(doc(db, 'users', userId), {
+      name: name.trim(),
+    }, { merge: true })
+      .then(() => console.log('[FIREBASE] Name saved to Firestore'))
+      .catch(e => console.error('[FIREBASE] Failed to save name:', e));
+
+    // Always navigate, don't wait for Firebase
+    router.push({ pathname: '/age-verification', params: { name: name.trim() } });
   };
 
   return (

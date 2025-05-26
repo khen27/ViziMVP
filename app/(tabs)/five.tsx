@@ -4,8 +4,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { ScrollView } from 'react-native';
 import Svg, { Path, Rect, Mask, G, Defs, Filter, FeFlood, FeColorMatrix, FeOffset, FeBlend, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
+import { useUser } from '../context/UserContext';
 
 export default function TabFiveScreen() {
+  const { name, image, bio, interests } = useUser();
+
+  // Take first 5 interests
+  const displayInterests = interests?.slice(0, 5) || [];
+
   return (
     <View style={styles.mainContainer}>
       <LinearGradient
@@ -40,7 +46,7 @@ export default function TabFiveScreen() {
           {/* Profile Image */}
           <View style={styles.profileImageContainer}>
             <Image 
-              source={require('../../assets/profile-pic.png')}
+              source={image ? { uri: image } : require('../../assets/profile-pic.png')}
               style={styles.profileImage}
             />
           </View>
@@ -56,7 +62,7 @@ export default function TabFiveScreen() {
                   {/* Profile information */}
                   <View style={styles.profileInfoContainer}>
                     {/* Full name */}
-                    <Text style={styles.fullNameText}>Karl Henderson</Text>
+                    <Text style={styles.fullNameText}>{name}</Text>
                     
                     {/* Location information */}
                     <View style={styles.locationContainer}>
@@ -84,40 +90,14 @@ export default function TabFiveScreen() {
                     
                     {/* Interest icons */}
                     <View style={styles.interestsContainer}>
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>✈️</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Travel</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>🍔</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Food</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>🌊</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Sea</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>🏸</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Badminton</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>☕</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Coffee</Text>
-                      </View>
+                      {displayInterests.map((interest, index) => (
+                        <View key={index} style={styles.interestItem}>
+                          <TouchableOpacity style={styles.interestIconButton}>
+                            <Text style={styles.interestEmoji}>{interest.emoji}</Text>
+                          </TouchableOpacity>
+                          <Text style={styles.interestLabel}>{interest.label}</Text>
+                        </View>
+                      ))}
                     </View>
                     
                     {/* Profile action buttons */}
@@ -131,9 +111,7 @@ export default function TabFiveScreen() {
                     </View>
                     
                     {/* Bio text */}
-                    <Text style={styles.bioText}>
-                      I’m a multi-faceted startup founder and USA expat 🇨🇿 always chasing new PRs 🏋️‍♂️ and passport stamps 🌍✈️. I speak English, Spanish, and some Czech. Fueled by bubble tea 🧋 and weekend brunch mimosas 🥂, I thrive on spontaneous night-train escapes 🚆 or impromptu road-trip adventures 🚗💨. My year splits between snowboarding 🏂 in winter and mastering wake-boarding & swimming laps 🏊‍♂️ in summer—balanced out by sauna & jacuzzi recovery sessions 🧖‍♂️💦. Whether I’m dialing in Olympic lifts, firing up the barbecue 🍖🔥, or diving into the latest anime binge 🎌, I live for an active, entrepreneurial life. Let’s turn every moment into our next epic story! 🔥✨
-                    </Text>
+                    <Text style={styles.bioText}>{bio}</Text>
                   </View>
                 </View>
               </ScrollView>

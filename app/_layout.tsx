@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { Platform, LogBox, AppRegistry, View, useColorScheme } from 'react-native';
 import Constants from 'expo-constants';
 import ChatDataProvider from './context/ChatDataContext';
+import { UserProvider } from './context/UserContext';
 
 // Try to load RNLocalize early to avoid module issues
 if (Platform.OS !== 'web') {
@@ -98,13 +99,21 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ChatDataProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ThemeProvider>
-    </ChatDataProvider>
+    <UserProvider>
+      <ChatDataProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="interests" options={{ headerShown: false }} />
+            <Stack.Screen name="profile-photo" options={{ headerShown: false }} />
+            <Stack.Screen name="add-bio" options={{ headerShown: false }} />
+            <Stack.Screen name="welcome" options={{ headerShown: false }} />
+            <Stack.Screen name="five" options={{ headerShown: false }} />
+          </Stack>
+        </ThemeProvider>
+      </ChatDataProvider>
+    </UserProvider>
   );
 }

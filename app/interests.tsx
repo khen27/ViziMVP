@@ -14,6 +14,9 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
+import { useUser } from './context/UserContext';
+import { db } from './utils/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 interface Interest {
   id: string;
@@ -94,6 +97,9 @@ export default function InterestsScreen() {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState<boolean>(false);
   const router = useRouter();
   const { name } = useLocalSearchParams();
+  const { setUserData } = useUser();
+  const userId = 'testUser'; // Replace with real user ID if available
+  const [loading, setLoading] = useState(false);
 
   const toggleInterest = (interestId: string) => {
     const newSelected = new Set(selectedInterests);
@@ -124,8 +130,36 @@ export default function InterestsScreen() {
     setSelectedInterests(newSelected);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selectedInterests.size >= 10) {
+      setLoading(true);
+      
+      // Convert selected IDs to full interest objects
+      const selectedInterestObjects = Array.from(selectedInterests).map(id => {
+        for (const category of Object.values(categories)) {
+          const interest = category.find(i => i.id === id);
+          if (interest) return interest;
+        }
+        return null;
+      }).filter(Boolean) as Interest[];
+
+      // Update context first
+      setUserData({
+        interests: selectedInterestObjects,
+        name: name as string,
+      });
+      console.log('[ONBOARDING] Interests saved to context:', { name, interests: selectedInterestObjects });
+
+      // Try to save to Firebase in the background
+      setDoc(doc(db, 'users', userId), {
+        name,
+        interests: selectedInterestObjects,
+      }, { merge: true })
+        .then(() => console.log('[FIREBASE] Interests saved to Firestore'))
+        .catch(e => console.error('[FIREBASE] Failed to save interests:', e));
+
+      // Always navigate, don't wait for Firebase
+      setLoading(false);
       router.push({
         pathname: '/profile-photo',
         params: { name }
@@ -225,10 +259,10 @@ export default function InterestsScreen() {
                   selectedInterests.size >= 10 && styles.confirmButtonEnabled
                 ]}
                 onPress={handleConfirm}
-                disabled={selectedInterests.size < 10}
+                disabled={selectedInterests.size < 10 || loading}
               >
                 <Text style={styles.confirmButtonText}>
-                  Confirm ({selectedInterests.size} Selected)
+                  {loading ? 'Saving...' : `Confirm (${selectedInterests.size} Selected)`}
                 </Text>
               </TouchableOpacity>
             </View>

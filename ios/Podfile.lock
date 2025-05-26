@@ -1657,6 +1657,8 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-maps (1.20.1):
     - React-Core
+  - react-native-netinfo (11.4.1):
+    - React-Core
   - react-native-safe-area-context (5.4.0):
     - DoubleConversion
     - glog
@@ -2492,6 +2494,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2666,6 +2669,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
@@ -2813,6 +2818,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: c3f4b608e4a59dd2f6a416ef4d47a14400194468
   React-microtasksnativemodule: 054f34e9b82f02bd40f09cebd4083828b5b2beb6
   react-native-maps: 9febd31278b35cd21e4fad2cf6fa708993be5dab
+  react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-safe-area-context: 562163222d999b79a51577eda2ea8ad2c32b4d06
   react-native-slider: 78ccabe016aef7418b1a846b31115b4165c4dde6
   React-NativeModulesApple: 2c4377e139522c3d73f5df582e4f051a838ff25e
