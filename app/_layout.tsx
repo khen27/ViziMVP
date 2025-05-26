@@ -10,6 +10,17 @@ import Constants from 'expo-constants';
 import ChatDataProvider from './context/ChatDataContext';
 import { AuthProvider } from './context/AuthContext';
 import SplashScreenComponent from './components/SplashScreen';
+import { InterestsProvider } from './context/InterestsContext';
+import {
+  useFonts as useDMSans,
+  DMSans_400Regular,
+  DMSans_500Medium,
+  DMSans_700Bold,
+} from '@expo-google-fonts/dm-sans';
+import {
+  useFonts as usePacifico,
+  Pacifico_400Regular,
+} from '@expo-google-fonts/pacifico';
 
 // Try to load RNLocalize early to avoid module issues
 if (Platform.OS !== 'web') {
@@ -72,24 +83,29 @@ const useAppColorScheme = () => {
 };
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    'DMSans-Regular': require('../assets/fonts/DMSans-Regular.ttf'),
-    'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
+  const [fontsLoaded] = useFonts({
     ...FontAwesome.font,
   });
+
+  const [dmSansLoaded] = useDMSans({
+    DMSans_400Regular,
+    DMSans_500Medium,
+    DMSans_700Bold,
+  });
+
+  const [pacificoLoaded] = usePacifico({
+    Pacifico_400Regular,
+  });
+
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded && dmSansLoaded && pacificoLoaded) {
       SplashScreen.hideAsync(); // Hide the native splash screen
     }
-  }, [loaded]);
+  }, [fontsLoaded, dmSansLoaded, pacificoLoaded]);
 
-  if (!loaded) {
+  if (!fontsLoaded || !dmSansLoaded || !pacificoLoaded) {
     return null;
   }
 
@@ -103,10 +119,12 @@ function RootLayoutNav() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <ChatDataProvider>
         <AuthProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          </Stack>
+          <InterestsProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            </Stack>
+          </InterestsProvider>
         </AuthProvider>
       </ChatDataProvider>
     </ThemeProvider>

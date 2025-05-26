@@ -5,9 +5,58 @@ import React, { useRef } from 'react';
 import { ScrollView } from 'react-native';
 import Svg, { Path, Rect, Mask, G, Defs, Filter, FeFlood, FeColorMatrix, FeOffset, FeBlend, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import ViewShot, { captureRef } from 'react-native-view-shot';
+import { useRouter } from 'expo-router';
+import { useInterests } from '../context/InterestsContext';
+
+type Interest = {
+  id: string;
+  emoji: string;
+  label: string;
+};
+
+type Categories = {
+  [key: string]: Interest[];
+};
+
+const categories: Categories = {
+  'Fun': [
+    { id: 'traveling', emoji: '✈️', label: 'Traveling' },
+    { id: 'music', emoji: '🎵', label: 'Music' },
+    { id: 'camping', emoji: '🏕️', label: 'Camping' },
+    { id: 'gaming', emoji: '🎮', label: 'Gaming' },
+    { id: 'beach_trips', emoji: '🏖️', label: 'Beach trips' },
+    { id: 'reading', emoji: '📚', label: 'Reading' },
+    { id: 'theatre', emoji: '🎭', label: 'Theatre' },
+  ],
+  'Sports': [
+    { id: 'cycling', emoji: '🚲', label: 'Cycling' },
+    { id: 'swimming', emoji: '🏊‍♂️', label: 'Swimming' },
+    { id: 'gym_fitness', emoji: '💪', label: 'Gym & fitness' },
+    { id: 'hiking', emoji: '⛰️', label: 'Hiking' },
+    { id: 'sports', emoji: '⚽', label: 'Sports' },
+    { id: 'basketball', emoji: '🏀', label: 'Basketball' },
+    { id: 'kayaking', emoji: '🛶', label: 'Kayaking' },
+  ],
+  'Food': [
+    { id: 'cooking', emoji: '👨‍🍳', label: 'Cooking' },
+    { id: 'coffee', emoji: '☕', label: 'Coffee' },
+    { id: 'wine', emoji: '🍷', label: 'Wine' },
+    { id: 'foodie', emoji: '🍽️', label: 'Foodie' },
+    { id: 'baking', emoji: '🥖', label: 'Baking' },
+    { id: 'brunch', emoji: '🥞', label: 'Brunch' },
+    { id: 'vegan', emoji: '🥗', label: 'Vegan' },
+    { id: 'bbq', emoji: '🍖', label: 'BBQ' },
+    { id: 'sushi', emoji: '🍱', label: 'Sushi' },
+    { id: 'pizza', emoji: '🍕', label: 'Pizza' },
+    { id: 'cocktails', emoji: '🍸', label: 'Cocktails' },
+    { id: 'beer', emoji: '🍺', label: 'Beer' },
+  ]
+};
 
 export default function TabFiveScreen() {
   const viewShotRef = useRef<ViewShot>(null);
+  const router = useRouter();
+  const { displayedInterests } = useInterests();
 
   const handleShare = async () => {
     try {
@@ -26,6 +75,54 @@ export default function TabFiveScreen() {
     } catch (error) {
       console.error("Error sharing profile:", error);
     }
+  };
+
+  const handleEditInterests = () => {
+    router.push('/edit-interests');
+  };
+
+  const getInterestEmoji = (interestId: string) => {
+    const allCategories = ['Fun', 'Sports', 'Food'];
+    for (const category of allCategories) {
+      const interest = categories[category]?.find((i: Interest) => i.id === interestId);
+      if (interest) {
+        return {
+          emoji: interest.emoji,
+          label: interest.label
+        };
+      }
+    }
+    return { emoji: '❓', label: 'Unknown' };
+  };
+
+  // Default interests if none are selected yet
+  const defaultInterests = [
+    { emoji: '✈️', label: 'Travel' },
+    { emoji: '🍔', label: 'Food' },
+    { emoji: '🌊', label: 'Sea' },
+    { emoji: '🏸', label: 'Badminton' },
+    { emoji: '☕', label: 'Coffee' },
+  ];
+
+  const renderInterests = () => {
+    const interestsToShow = displayedInterests.length > 0 
+      ? displayedInterests.map(id => getInterestEmoji(id))
+      : defaultInterests;
+
+    return interestsToShow.slice(0, 5).map((interest, index) => (
+      <View key={index} style={styles.interestItem}>
+        <View style={styles.interestIconButton}>
+          <Text style={styles.interestEmoji}>{interest.emoji}</Text>
+        </View>
+        <Text 
+          style={styles.interestLabel}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {interest.label}
+        </Text>
+      </View>
+    ));
   };
 
   return (
@@ -104,43 +201,19 @@ export default function TabFiveScreen() {
                       <Text style={styles.friendsText}>113k Friends</Text>
                     </View>
                     
-                    {/* Interest icons */}
-                    <View style={styles.interestsContainer}>
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>✈️</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Travel</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>🍔</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Food</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>🌊</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Sea</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>🏸</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Badminton</Text>
-                      </View>
-                      
-                      <View style={styles.interestItem}>
-                        <TouchableOpacity style={styles.interestIconButton}>
-                          <Text style={styles.interestEmoji}>☕</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.interestLabel}>Coffee</Text>
-                      </View>
-                    </View>
+                    {/* Interest icons - Now tappable */}
+                    <TouchableOpacity 
+                      onPress={handleEditInterests}
+                      style={styles.interestsWrapper}
+                    >
+                      <ScrollView 
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.interestsContainer}
+                      >
+                        {renderInterests()}
+                      </ScrollView>
+                    </TouchableOpacity>
                     
                     {/* Profile action buttons */}
                     <View style={styles.buttonContainer}>
@@ -257,7 +330,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   fullNameText: {
-    fontFamily: 'DMSans-Bold',
+    fontFamily: 'DMSans_700Bold',
     fontSize: 36,
     lineHeight: 40,
     textAlign: 'center',
@@ -282,41 +355,45 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   locationText: {
-    fontFamily: 'DMSans-Medium',
+    fontFamily: 'DMSans_500Medium',
     fontSize: 16,
     lineHeight: 24,
     color: '#000000',
     backgroundColor: 'transparent',
   },
   dot: {
-    fontFamily: 'DMSans-Medium',
+    fontFamily: 'DMSans_500Medium',
     fontSize: 16,
     lineHeight: 24,
     color: '#000000',
     backgroundColor: 'transparent',
   },
   friendsText: {
-    fontFamily: 'DMSans-Medium',
+    fontFamily: 'DMSans_500Medium',
     fontSize: 16,
     lineHeight: 24,
     color: '#000000',
     backgroundColor: 'transparent',
   },
-  interestsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  interestsWrapper: {
     width: '100%',
-    height: 72,
+    height: 80,
     marginTop: 16,
     backgroundColor: 'transparent',
+  },
+  interestsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    gap: 16,
   },
   interestItem: {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    width: 64,
-    height: 72, // Increased height to accommodate larger emojis
+    gap: 4,
+    minWidth: 48,
+    height: 80,
     backgroundColor: 'transparent',
   },
   interestIconButton: {
@@ -334,14 +411,18 @@ const styles = StyleSheet.create({
     fontSize: 22,
     lineHeight: 26,
     backgroundColor: 'transparent',
-    marginTop: 1, // Slightly adjust vertical position of emoji
+    marginTop: 1,
   },
   interestLabel: {
-    fontFamily: 'DMSans-Medium',
+    fontFamily: 'DMSans_500Medium',
     fontSize: 12,
-    lineHeight: 18,
+    lineHeight: 16,
     color: '#000000',
     backgroundColor: 'transparent',
+    width: 'auto',
+    textAlign: 'center',
+    flexShrink: 1,
+    flexGrow: 0,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -361,7 +442,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   editButtonText: {
-    fontFamily: 'DMSans-Medium',
+    fontFamily: 'DMSans_500Medium',
     fontSize: 16,
     lineHeight: 20,
     color: '#000000',
@@ -377,14 +458,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 35,
   },
   shareButtonText: {
-    fontFamily: 'DMSans-Medium',
+    fontFamily: 'DMSans_500Medium',
     fontSize: 16,
     lineHeight: 20,
     color: '#FFFFFF',
     letterSpacing: -0.015 * 16,
   },
   bioText: {
-    fontFamily: 'DMSans-Regular',
+    fontFamily: 'DMSans_400Regular',
     fontSize: 16,
     lineHeight: 20,
     textAlign: 'center',
