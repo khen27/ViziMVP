@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { Platform, LogBox, AppRegistry, View, useColorScheme } from 'react-native';
 import Constants from 'expo-constants';
 import ChatDataProvider from './context/ChatDataContext';
+import { AuthProvider } from './context/AuthContext';
 import SplashScreenComponent from './components/SplashScreen';
 
 // Try to load RNLocalize early to avoid module issues
@@ -88,16 +89,8 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-  };
-
   if (!loaded) {
     return null;
-  }
-
-  if (showSplash) {
-    return <SplashScreenComponent onAnimationComplete={handleSplashComplete} />;
   }
 
   return <RootLayoutNav />;
@@ -107,13 +100,15 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ChatDataProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ThemeProvider>
-    </ChatDataProvider>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ChatDataProvider>
+        <AuthProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </AuthProvider>
+      </ChatDataProvider>
+    </ThemeProvider>
   );
 }

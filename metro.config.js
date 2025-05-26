@@ -5,9 +5,19 @@ const path = require('path');
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
+const { transformer, resolver } = config;
+
 // Add custom configurations
-config.resolver.sourceExts = ['js', 'jsx', 'ts', 'tsx', 'json'];
-config.transformer.babelTransformerPath = require.resolve('react-native-svg-transformer');
+config.transformer = {
+  ...transformer,
+  babelTransformerPath: require.resolve('react-native-svg-transformer'),
+};
+
+config.resolver = {
+  ...resolver,
+  assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
+  sourceExts: [...resolver.sourceExts, 'svg'],
+};
 
 // Additional settings to disable inspector
 config.server = {

@@ -7,26 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		128298BE7997DFC9A231701F /* libPods-Vizi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B81F3CF6113D58A55A690B1 /* libPods-Vizi.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		1A69626E692936FF6B538BC6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E1B06641D83C406166836EDE /* PrivacyInfo.xcprivacy */; };
-		3CA26F849C53A33EE49F284A /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C14A943ABEDE079A6386C4 /* ExpoModulesProvider.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		61EEF0CB745549512C25D0E6 /* Pods_Vizi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC19C7AF8B8364E8248025A1 /* Pods_Vizi.framework */; };
+		733231EF5B4B26A81AFC6F12 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EC3B2C34DED316D77CB3B /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		D4430CB0AE7FA9D58C3595DF /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DBDBA9FEE8278A13704B2672 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0DFD2C6AA4FAB02B64017DC8 /* Pods-Vizi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vizi.release.xcconfig"; path = "Target Support Files/Pods-Vizi/Pods-Vizi.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Vizi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vizi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Vizi/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Vizi/Info.plist; sourceTree = "<group>"; };
-		31C14A943ABEDE079A6386C4 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Vizi/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		9B81F3CF6113D58A55A690B1 /* libPods-Vizi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Vizi.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2804F7C651DCFCD1307D91EE /* Pods-Vizi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vizi.release.xcconfig"; path = "Target Support Files/Pods-Vizi/Pods-Vizi.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Vizi/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		E1B06641D83C406166836EDE /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Vizi/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		E3D605B1D9B26C495296B4F5 /* Pods-Vizi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vizi.debug.xcconfig"; path = "Target Support Files/Pods-Vizi/Pods-Vizi.debug.xcconfig"; sourceTree = "<group>"; };
+		CC19C7AF8B8364E8248025A1 /* Pods_Vizi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Vizi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBDBA9FEE8278A13704B2672 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Vizi/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		DE6B55AAA511EB3AABB088F4 /* Pods-Vizi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vizi.debug.xcconfig"; path = "Target Support Files/Pods-Vizi/Pods-Vizi.debug.xcconfig"; sourceTree = "<group>"; };
+		E28EC3B2C34DED316D77CB3B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Vizi/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Vizi/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Vizi-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Vizi-Bridging-Header.h"; path = "Vizi/Vizi-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				128298BE7997DFC9A231701F /* libPods-Vizi.a in Frameworks */,
+				61EEF0CB745549512C25D0E6 /* Pods_Vizi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,26 +53,28 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				E1B06641D83C406166836EDE /* PrivacyInfo.xcprivacy */,
+				DBDBA9FEE8278A13704B2672 /* PrivacyInfo.xcprivacy */,
 			);
 			name = Vizi;
+			sourceTree = "<group>";
+		};
+		14E3B458ABBB6542F57E7B53 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DE6B55AAA511EB3AABB088F4 /* Pods-Vizi.debug.xcconfig */,
+				2804F7C651DCFCD1307D91EE /* Pods-Vizi.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				9B81F3CF6113D58A55A690B1 /* libPods-Vizi.a */,
+				CC19C7AF8B8364E8248025A1 /* Pods_Vizi.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		398F42356B211F75E6245E44 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				BE2D1AB919270F440D22D373 /* Vizi */,
-			);
-			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -89,8 +91,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				BD43B2F82FF0B0A1D71F9EDE /* Pods */,
-				398F42356B211F75E6245E44 /* ExpoModulesProviders */,
+				14E3B458ABBB6542F57E7B53 /* Pods */,
+				C86EDA5737F6AD7DA54A69F4 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -114,20 +116,18 @@
 			path = Vizi/Supporting;
 			sourceTree = "<group>";
 		};
-		BD43B2F82FF0B0A1D71F9EDE /* Pods */ = {
+		C86EDA5737F6AD7DA54A69F4 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				E3D605B1D9B26C495296B4F5 /* Pods-Vizi.debug.xcconfig */,
-				0DFD2C6AA4FAB02B64017DC8 /* Pods-Vizi.release.xcconfig */,
+				E2CE5A624472235EB5E7E964 /* Vizi */,
 			);
-			name = Pods;
-			path = Pods;
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
-		BE2D1AB919270F440D22D373 /* Vizi */ = {
+		E2CE5A624472235EB5E7E964 /* Vizi */ = {
 			isa = PBXGroup;
 			children = (
-				31C14A943ABEDE079A6386C4 /* ExpoModulesProvider.swift */,
+				E28EC3B2C34DED316D77CB3B /* ExpoModulesProvider.swift */,
 			);
 			name = Vizi;
 			sourceTree = "<group>";
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Vizi" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				CFA2378F199FB677C9492C3C /* [Expo] Configure project */,
+				94D5233CD66DA53EBBC159AE /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				2455F2743085EC142277AF39 /* [CP] Embed Pods Frameworks */,
+				76D3948A5E651ED12065F8BE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				1A69626E692936FF6B538BC6 /* PrivacyInfo.xcprivacy in Resources */,
+				D4430CB0AE7FA9D58C3595DF /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +240,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2455F2743085EC142277AF39 /* [CP] Embed Pods Frameworks */ = {
+		76D3948A5E651ED12065F8BE /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -302,7 +302,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Vizi/Pods-Vizi-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CFA2378F199FB677C9492C3C /* [Expo] Configure project */ = {
+		94D5233CD66DA53EBBC159AE /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -329,7 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				3CA26F849C53A33EE49F284A /* ExpoModulesProvider.swift in Sources */,
+				733231EF5B4B26A81AFC6F12 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,7 +338,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E3D605B1D9B26C495296B4F5 /* Pods-Vizi.debug.xcconfig */;
+			baseConfigurationReference = DE6B55AAA511EB3AABB088F4 /* Pods-Vizi.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -374,7 +374,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0DFD2C6AA4FAB02B64017DC8 /* Pods-Vizi.release.xcconfig */;
+			baseConfigurationReference = 2804F7C651DCFCD1307D91EE /* Pods-Vizi.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -449,6 +449,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
@@ -508,6 +519,17 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
