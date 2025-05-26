@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, Stack } from 'expo-router';
-import Toast from './components/Toast';
+import Toast from '@/components/Toast';
 
 export default function NameScreen() {
   const [name, setName] = useState('');
@@ -53,7 +53,7 @@ export default function NameScreen() {
             visible={showToast}
             message="Please enter your name"
             onHide={() => setShowToast(false)}
-            icon={<Image source={require('../assets/icons/icon-danger.png')} style={{ width: 20, height: 20 }} />}
+            icon={<Image source={require('@/assets/icons/icon-danger.png')} style={{ width: 20, height: 20 }} />}
             backgroundColor="#FFFFFF"
             borderColor="rgba(237, 83, 112, 0.2)"
             shadowColor="rgba(248, 92, 58, 0.1)"

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, SafeAreaView, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
-import Toast from './components/Toast';
+import Toast from '@/components/Toast';
 
 export default function SocialMediaScreen() {
   const [instagram, setInstagram] = useState('');
@@ -16,7 +16,7 @@ export default function SocialMediaScreen() {
       return;
     }
     router.push({
-      pathname: '/interests',
+      pathname: '/home-city',
       params: { name }
     });
   };
@@ -61,7 +61,7 @@ export default function SocialMediaScreen() {
             visible={showToast}
             message="Please enter your Instagram"
             onHide={() => setShowToast(false)}
-            icon={<Image source={require('../assets/icons/icon-danger.png')} style={{ width: 20, height: 20 }} />}
+            icon={<Image source={require('@/assets/icons/icon-danger.png')} style={{ width: 20, height: 20 }} />}
             backgroundColor="#FFFFFF"
             borderColor="rgba(237, 83, 112, 0.2)"
             shadowColor="rgba(248, 92, 58, 0.1)"

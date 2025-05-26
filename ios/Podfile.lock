@@ -279,7 +279,7 @@ PODS:
     - ExpoModulesCore
   - ExpoFont (13.3.1):
     - ExpoModulesCore
-  - ExpoHead (5.0.6):
+  - ExpoHead (5.0.7):
     - ExpoModulesCore
   - ExpoKeepAwake (14.1.4):
     - ExpoModulesCore
@@ -2123,7 +2123,7 @@ PODS:
     - React-logger (= 0.79.2)
     - React-perflogger (= 0.79.2)
     - React-utils (= 0.79.2)
-  - RNCAsyncStorage (1.24.0):
+  - RNCAsyncStorage (2.1.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2782,7 +2782,7 @@ SPEC CHECKSUMS:
   ExpoBlur: 7f9379db213e4a56aeceda82e94a7fea1b1d8c48
   ExpoFileSystem: c36eb8155eb2381c83dda7dc210e3eec332368b6
   ExpoFont: abbb91a911eb961652c2b0a22eef801860425ed6
-  ExpoHead: 5bb77b49d8fbe9d95b095a044a51d6b3a5b5379e
+  ExpoHead: af044f3e9c99e7d8d21bf653b4c2f2ef53a7f082
   ExpoKeepAwake: bf0811570c8da182bfb879169437d4de298376e7
   ExpoLinearGradient: a3126d055dd021c1eb38a2cf28052ccbd1a2b3e2
   ExpoLinking: b85ff4eafeae6fc638c6cace60007ae521af0ef4
@@ -2862,7 +2862,7 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: 04d5eb15eb46be6720e17a4a7fa92940a776e584
   ReactCodegen: 041559ba76d00f6680dfa0916b3c791f4babe5ea
   ReactCommon: 1511ef100f1afa4c199fe52fe7a8d2529a41429a
-  RNCAsyncStorage: 7389d6a3f23f10f39b523b68eda4088fa6b5eae9
+  RNCAsyncStorage: 646c1bf2ebfc78d6632a3b0399f471fba8101e73
   RNCMaskedView: d72fac1c6517be910e8be1370ac324059bcbe677
   RNCPicker: c4e9fdf00bbd0d37c6c4f1df6eae3d4d7d32f1e3
   RNLocalize: 530e4a79bacbc6d7c13df44edb266e805903f656

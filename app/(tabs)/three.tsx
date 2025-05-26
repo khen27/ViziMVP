@@ -20,12 +20,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { LinearGradient } from 'expo-linear-gradient';
-import EmojiRating from '@/app/components/EmojiRating';
-import i18n from '@/app/utils/i18n';
-// import { collection, addDoc, serverTimestamp, db, app } from '@/app/utils/firebase';
-// import { FirebaseApp } from 'firebase/app';
-// import { Firestore } from 'firebase/firestore';
-import Toast from '@/app/components/Toast';
+import EmojiRating from '../../components/EmojiRating';
+import i18n from '../../utils/i18n';
+import { collection, addDoc, serverTimestamp, db, app } from '../../utils/firebase';
+import Toast from '../../components/Toast';
 
 const { width, height } = Dimensions.get('window');
 
@@ -43,8 +41,8 @@ function TabThreeScreen() {
   const [, forceUpdate] = useState(0);
 
   const [fontsLoaded] = useFonts({
-    'DMSans-Regular': require('@/assets/fonts/DMSans-Regular.ttf'),
-    'DMSans-Medium': require('@/assets/fonts/DMSans-Medium.ttf'),
+    'DMSans-Regular': require('../../assets/fonts/DMSans-Regular.ttf'),
+    'DMSans-Medium': require('../../assets/fonts/DMSans-Medium.ttf'),
   });
 
   // Set up a listener to force a UI update when app becomes active
@@ -84,11 +82,11 @@ function TabThreeScreen() {
 
     console.log("Submitting feedback:", { rating, feedbackText, contactMe });
 
-    // if (!app) {
-    //   setErrorMessage('Something went wrong. Please try again.');
-    //   setShowErrorToast(true);
-    //   return;
-    // }
+    if (!app) {
+      setErrorMessage('Something went wrong. Please try again.');
+      setShowErrorToast(true);
+      return;
+    }
 
     try {
       setIsSubmitting(true);
@@ -101,7 +99,7 @@ function TabThreeScreen() {
       };
 
       // Use collection reference
-      // const feedbackCollection = collection(db, "feedback");
+      const feedbackCollection = collection(db, "feedback");
       
       let isSubmitted = false;
       try {
@@ -111,7 +109,7 @@ function TabThreeScreen() {
         );
         
         await Promise.race([
-          // addDoc(feedbackCollection, feedbackData),
+          addDoc(feedbackCollection, feedbackData),
           timeoutPromise
         ]);
         
@@ -233,7 +231,7 @@ function TabThreeScreen() {
           visible={showToast}
           message="Thanks! We've received your feedback."
           onHide={() => setShowToast(false)}
-          icon={<Image source={require('@/assets/icons/icon-toast-tick-circle.png')} style={styles.toastIcon} />}
+          icon={<Image source={require('../../assets/icons/icon-toast-tick-circle.png')} style={styles.toastIcon} />}
           backgroundColor="#FFFFFF"
           borderColor="rgba(70, 148, 253, 0.2)"
           shadowColor="rgba(70, 148, 253, 0.1)"
@@ -245,7 +243,7 @@ function TabThreeScreen() {
           visible={showErrorToast}
           message={errorMessage}
           onHide={() => setShowErrorToast(false)}
-          icon={<Image source={require('@/assets/icons/icon-toast-info-circle.png')} style={styles.toastIcon} />}
+          icon={<Image source={require('../../assets/icons/icon-toast-info-circle.png')} style={styles.toastIcon} />}
           backgroundColor="#FFFFFF"
           borderColor="rgba(255, 163, 0, 0.2)"
           shadowColor="rgba(248, 92, 58, 0.1)"

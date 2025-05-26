@@ -1,19 +1,18 @@
 import { StyleSheet, TouchableOpacity, Alert, ViewStyle, Image, Platform, View as RNView } from 'react-native';
 import React, { useState, useRef, useContext } from 'react';
 import type { Region } from 'react-native-maps';
-import { View } from '@/components/Themed';
+import { View } from '../../components/Themed';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
-import Toast from '../components/Toast';
-import CreateChatModal from '../components/CreateChatModal';
-import GroupChatMarker from '../components/GroupChatMarker';
-import ChatDetailsModal from '../components/ChatDetailsModal';
-import { getNextWidgetImage, getRandomWidgetImage } from '../utils/imageUtils';
-import { ChatDataContext } from '../context/ChatDataContext';
+import Toast from '../../components/Toast';
+import CreateChatModal from '../../components/CreateChatModal';
+import GroupChatMarker from '../../components/GroupChatMarker';
+import { getNextWidgetImage, getRandomWidgetImage } from '@/utils/imageUtils';
+import { ChatDataContext } from '../../context/ChatDataContext';
 
 // Import icons
 const filterIcon = require('../../assets/icons/icon-filter.png');
@@ -76,10 +75,6 @@ export default function TabOneScreen() {
   
   // Filter button state
   const [filterPressed, setFilterPressed] = useState(false);
-
-  // For the chat details modal
-  const [selectedChat, setSelectedChat] = useState<ChatMarker | null>(null);
-  const [chatDetailsModalVisible, setChatDetailsModalVisible] = useState(false);
 
   // Toggle filter state
   const toggleFilter = () => {
@@ -154,16 +149,13 @@ export default function TabOneScreen() {
 
   // Handler for when a group chat marker is pressed
   const handleChatMarkerPress = (chatMarker: ChatMarker) => {
-    if (chatMarker) {
-      setSelectedChat(chatMarker);
-      setChatDetailsModalVisible(true);
-    }
+    // For now, just close the modal - future enhancement would be to join the chat
+    setToastVisible(true);
   };
   
   // Handle joining a chat
   const handleJoinChat = () => {
     // For now, just close the modal - future enhancement would be to join the chat
-    setChatDetailsModalVisible(false);
     setToastVisible(true);
   };
 
@@ -189,20 +181,6 @@ export default function TabOneScreen() {
           addChatMarker(values);
         }}
       />
-      
-      {/* Chat Details Modal */}
-      {selectedChat && (
-        <ChatDetailsModal
-          visible={chatDetailsModalVisible}
-          onClose={() => {
-            setChatDetailsModalVisible(false);
-            // Clear the selected chat when closing the modal
-            setSelectedChat(null);
-          }}
-          onJoin={handleJoinChat}
-          chatData={selectedChat}
-        />
-      )}
       
       {/* Toast notification */}
       <Toast
