@@ -3,11 +3,12 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { Platform, LogBox, AppRegistry, View, useColorScheme } from 'react-native';
 import Constants from 'expo-constants';
 import ChatDataProvider from './context/ChatDataContext';
+import SplashScreenComponent from './components/SplashScreen';
 
 // Try to load RNLocalize early to avoid module issues
 if (Platform.OS !== 'web') {
@@ -75,20 +76,28 @@ export default function RootLayout() {
     'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
     ...FontAwesome.font,
   });
+  const [showSplash, setShowSplash] = useState(true);
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync(); // Hide the native splash screen
     }
   }, [loaded]);
 
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
   if (!loaded) {
     return null;
+  }
+
+  if (showSplash) {
+    return <SplashScreenComponent onAnimationComplete={handleSplashComplete} />;
   }
 
   return <RootLayoutNav />;
