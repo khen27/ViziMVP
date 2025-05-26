@@ -18,8 +18,8 @@ export default function OnboardingStepTwo() {
 
   // Load fonts
   const [fontsLoaded] = useFonts({
-    'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf'),
-    'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
+    'Pacifico': require('@/assets/fonts/Pacifico-Regular.ttf'),
+    'DMSans-Medium': require('@/assets/fonts/DMSans-Medium.ttf'),
   });
 
   // Prepare the app - load all resources
@@ -28,8 +28,8 @@ export default function OnboardingStepTwo() {
       try {
         // Pre-load fonts, make any API calls you need to do here
         await Font.loadAsync({
-          'Pacifico': require('../assets/fonts/Pacifico-Regular.ttf'),
-          'DMSans-Medium': require('../assets/fonts/DMSans-Medium.ttf'),
+          'Pacifico': require('@/assets/fonts/Pacifico-Regular.ttf'),
+          'DMSans-Medium': require('@/assets/fonts/DMSans-Medium.ttf'),
         });
         
         // Artificially delay for a smoother transition
@@ -79,7 +79,7 @@ export default function OnboardingStepTwo() {
           </View>
 
           <Image 
-            source={require('../assets/world-map.png')}
+            source={require('@/assets/world-map.png')}
             style={styles.mapImage}
             resizeMode="contain"
           />

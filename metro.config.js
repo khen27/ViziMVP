@@ -17,6 +17,17 @@ config.resolver = {
   ...resolver,
   assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
   sourceExts: [...resolver.sourceExts, 'svg'],
+  extraNodeModules: {
+    '@': path.resolve(__dirname),
+  },
+  // Add aliases for common directories
+  alias: {
+    '@/components': path.resolve(__dirname, 'components'),
+    '@/utils': path.resolve(__dirname, 'utils'),
+    '@/context': path.resolve(__dirname, 'context'),
+    '@/theme': path.resolve(__dirname, 'theme'),
+    '@/assets': path.resolve(__dirname, 'assets'),
+  },
 };
 
 // Additional settings to disable inspector

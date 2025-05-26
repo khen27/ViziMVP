@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, TextInput, Platform, Image } from 'react-native';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
+import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import Toast from '@/components/Toast';
 
@@ -213,6 +214,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     overflow: 'hidden',
+    backgroundColor: 'transparent',
   },
   toggleTrack: {
     width: '100%',

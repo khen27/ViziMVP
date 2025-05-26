@@ -93,6 +93,7 @@ module.exports = {
     favicon: "./assets/icon.png"
   },
   plugins: [
+    "expo-router",
     "expo-font",
     [
       "expo-build-properties",

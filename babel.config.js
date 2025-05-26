@@ -3,6 +3,11 @@ module.exports = function(api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      ['module-resolver', {
+        root: ['./'],
+        alias: { '@': './' },
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.ios.js', '.android.js']
+      }],
       [
         'transform-inline-environment-variables',
         {

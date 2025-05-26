@@ -46,13 +46,13 @@ export default function OnboardingScreen() {
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         <ImageBackground
-          source={require('../assets/onboarding-bg.png')}
+          source={require('@/assets/onboarding-bg.png')}
           style={styles.backgroundImage}
           resizeMode="cover"
         >
           <SafeAreaView style={styles.contentContainer}>
             <Image
-              source={require('../assets/vizi-logo.png')}
+              source={require('@/assets/vizi-logo.png')}
               style={styles.logo}
               resizeMode="contain"
             />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, View, StyleSheet, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors, spacing, radii } from '../../theme';
+import { colors, spacing } from 'theme/theme';
 
 export interface ScreenContainerProps {
   children: React.ReactNode;

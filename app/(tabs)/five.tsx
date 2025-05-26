@@ -1,12 +1,12 @@
 import { StyleSheet, SafeAreaView, StatusBar, Image, TouchableOpacity, Text, ImageBackground, Share } from 'react-native';
-import { View } from '@/components/Themed';
+import { View } from 'theme/Themed';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useRef } from 'react';
 import { ScrollView } from 'react-native';
 import Svg, { Path, Rect, Mask, G, Defs, Filter, FeFlood, FeColorMatrix, FeOffset, FeBlend, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import { useRouter } from 'expo-router';
-import { useInterests } from '../context/InterestsContext';
+import { useInterests } from 'context/InterestsContext';
 
 type Interest = {
   id: string;

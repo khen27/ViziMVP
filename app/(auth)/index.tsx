@@ -9,7 +9,7 @@ import { router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
-// import { app } from '../utils/firebase';
+// import { app } from '@/utils/firebase';
 
 const { width } = Dimensions.get('window');
 

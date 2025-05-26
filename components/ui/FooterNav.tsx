@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, StyleSheet, Pressable, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, spacing, radii, typography } from '../../theme';
+import { colors } from 'theme/theme';
 
 interface NavBtn {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  /** outline or fill */
+  variant?: 'primary' | 'ghost';
 }
+
 interface Props {
   left: NavBtn;
   right: NavBtn;
@@ -16,22 +19,25 @@ interface Props {
 export default function FooterNav({ left, right }: Props) {
   const insets = useSafeAreaInsets();
 
-  const Btn = ({ label, onPress, disabled }: NavBtn) => (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      style={[
-        styles.btn,
-        disabled && { opacity: 0.4 },
-        label === 'Skip' ? styles.ghost : styles.primary,
-      ]}
-    >
-      <Text style={[styles.btnTxt, label === 'Skip' && styles.ghostTxt]}>{label}</Text>
-    </Pressable>
-  );
+  const Btn = ({ label, onPress, disabled, variant }: NavBtn) => {
+    const isGhost = variant === 'ghost';
+    return (
+      <Pressable
+        onPress={onPress}
+        disabled={disabled}
+        style={[
+          styles.btn,
+          isGhost ? styles.ghost : styles.primary,
+          disabled && { opacity: 0.4 },
+        ]}
+      >
+        <Text style={[styles.btnTxt, isGhost && styles.ghostTxt]}>{label}</Text>
+      </Pressable>
+    );
+  };
 
   return (
-    <View style={[styles.row, { paddingBottom: insets.bottom + spacing.sm }]}> 
+    <View style={[styles.row, { paddingBottom: insets.bottom + 8 }]}> 
       <Btn {...left} />
       <Btn {...right} />
     </View>
@@ -41,22 +47,22 @@ export default function FooterNav({ left, right }: Props) {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    gap: spacing.md,
-    paddingHorizontal: spacing.lg,
+    gap: 12,
+    paddingHorizontal: 20,
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    backgroundColor: colors.white,
+    backgroundColor: 'transparent',
   },
   btn: {
     flex: 1,
     height: 56,
-    borderRadius: radii.lg,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
   },
   primary: { backgroundColor: colors.primary },
   ghost: { borderWidth: 1, borderColor: colors.primary, backgroundColor: colors.white },
-  btnTxt: { fontFamily: typography.fontFamily, fontSize: typography.size.md, color: colors.white, fontWeight: typography.weight.medium },
+  btnTxt: { fontFamily: 'DM Sans', fontSize: 16, color: colors.white, fontWeight: '500' },
   ghostTxt: { color: colors.primary },
 }); 
