@@ -17,7 +17,7 @@
     "@expo-google-fonts/dm-sans": "^0.3.0",
     "@expo-google-fonts/pacifico": "^0.3.0",
     "@expo/vector-icons": "^14.1.0",
-    "@react-native-async-storage/async-storage": "^1.24.0",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-community/slider": "^4.5.6",
     "@react-native-masked-view/masked-view": "0.3.2",
     "@react-native-picker/picker": "^2.11.0",
