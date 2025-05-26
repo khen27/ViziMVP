@@ -32,6 +32,10 @@ export default function SocialMediaScreen() {
       >
         <SafeAreaView style={{ flex: 1 }}>
           <View style={styles.card}>
+            {/* Back Button */}
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+              <View style={styles.backIcon} />
+            </TouchableOpacity>
             <View style={styles.logoContainer}>
               <Text style={styles.logoText}>Vizi</Text>
             </View>
@@ -164,5 +168,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     letterSpacing: -0.015 * 16,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    width: 50,
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  backIcon: {
+    width: 20,
+    height: 20,
+    borderLeftWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: '#000',
+    transform: [{ rotate: '45deg' }],
+    marginLeft: 8,
   },
 }); 

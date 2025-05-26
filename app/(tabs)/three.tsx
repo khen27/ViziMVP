@@ -22,9 +22,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { LinearGradient } from 'expo-linear-gradient';
 import EmojiRating from '@/app/components/EmojiRating';
 import i18n from '@/app/utils/i18n';
-import { collection, addDoc, serverTimestamp, db, app } from '@/app/utils/firebase';
-import { FirebaseApp } from 'firebase/app';
-import { Firestore } from 'firebase/firestore';
+// import { collection, addDoc, serverTimestamp, db, app } from '@/app/utils/firebase';
+// import { FirebaseApp } from 'firebase/app';
+// import { Firestore } from 'firebase/firestore';
 import Toast from '@/app/components/Toast';
 
 const { width, height } = Dimensions.get('window');
@@ -84,11 +84,11 @@ function TabThreeScreen() {
 
     console.log("Submitting feedback:", { rating, feedbackText, contactMe });
 
-    if (!app) {
-      setErrorMessage('Something went wrong. Please try again.');
-      setShowErrorToast(true);
-      return;
-    }
+    // if (!app) {
+    //   setErrorMessage('Something went wrong. Please try again.');
+    //   setShowErrorToast(true);
+    //   return;
+    // }
 
     try {
       setIsSubmitting(true);
@@ -101,7 +101,7 @@ function TabThreeScreen() {
       };
 
       // Use collection reference
-      const feedbackCollection = collection(db, "feedback");
+      // const feedbackCollection = collection(db, "feedback");
       
       let isSubmitted = false;
       try {
@@ -111,7 +111,7 @@ function TabThreeScreen() {
         );
         
         await Promise.race([
-          addDoc(feedbackCollection, feedbackData),
+          // addDoc(feedbackCollection, feedbackData),
           timeoutPromise
         ]);
         
