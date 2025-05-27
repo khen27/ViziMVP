@@ -1,32 +1,52 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, TextInput, Platform, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform, Image } from 'react-native';
 import { useRouter, Stack, useLocalSearchParams } from 'expo-router';
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as ImagePicker from 'expo-image-picker';
 import Toast from '@/components/Toast';
+import CameraIcon from '@/assets/icons/icon-camera';
 
-export default function HomeCityScreen() {
-  const [city, setCity] = useState('');
-  const [showOnProfile, setShowOnProfile] = useState(true);
+export default function ProfilePictureScreen() {
+  const [image, setImage] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const router = useRouter();
-  const { name } = useLocalSearchParams();
+  const { name, city } = useLocalSearchParams();
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (status !== 'granted') {
+      setShowToast(true);
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   const handleContinue = () => {
-    if (!city.trim()) {
+    if (!image) {
       setShowToast(true);
       return;
     }
     router.push({
-      pathname: '/profile-picture',
-      params: { name, city }
+      pathname: '/interests',
+      params: { name, city, image }
     });
   };
 
   const handleSkip = () => {
     router.push({
-      pathname: '/profile-picture',
-      params: { name }
+      pathname: '/interests',
+      params: { name, city }
     });
   };
 
@@ -47,42 +67,20 @@ export default function HomeCityScreen() {
               </TouchableOpacity>
 
               <View style={styles.headerSection}>
-                <Text style={styles.title}>Where's home for you?</Text>
-                <Text style={styles.subtitle}>Choose your hometown to help others connect with you more easily.</Text>
+                <Text style={styles.title}>Add a profile picture</Text>
+                <Text style={styles.subtitle}>Help others recognize you by adding a profile picture.</Text>
               </View>
 
-              <View style={styles.inputSection}>
-                <Text style={styles.inputLabel}>Search your city</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="e.g. 🇺🇸 Miami, FL, USA"
-                  placeholderTextColor="rgba(0,0,0,0.3)"
-                  value={city}
-                  onChangeText={setCity}
-                  autoCapitalize="none"
-                />
-              </View>
-
-              <View style={styles.toggleSection}>
-                <View style={styles.toggleContainer}>
-                  <Text style={styles.toggleLabel}>Show on your profile</Text>
-                  <TouchableOpacity 
-                    style={styles.toggleTouchable}
-                    onPress={() => setShowOnProfile(!showOnProfile)}
-                    activeOpacity={0.8}
-                  >
-                    <LinearGradient
-                      colors={showOnProfile ? ['#7C62DF', '#358AF7'] : ['#DEE6ED', '#DEE6ED']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.toggleTrack}
-                    >
-                      <View style={[styles.toggleThumb, showOnProfile && styles.toggleThumbActive]} />
-                    </LinearGradient>
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.toggleDescription}>Let others see this on your profile</Text>
-              </View>
+              <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
+                {image ? (
+                  <Image source={{ uri: image }} style={styles.profileImage} />
+                ) : (
+                  <View style={styles.placeholderContainer}>
+                    <CameraIcon />
+                    <Text style={styles.uploadText}>Upload photo</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
 
               <View style={styles.bottomButtons}>
                 <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
@@ -108,7 +106,7 @@ export default function HomeCityScreen() {
         </View>
         <Toast
           visible={showToast}
-          message="Please enter your city"
+          message={image ? "Please select a photo to continue" : "Please allow access to your photos"}
           onHide={() => setShowToast(false)}
           icon={<Image source={require('@/assets/icons/icon-danger.png')} style={{ width: 20, height: 20 }} />}
           backgroundColor="#FFFFFF"
@@ -127,12 +125,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#4694FD',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   card: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
@@ -160,7 +155,7 @@ const styles = StyleSheet.create({
   },
   headerSection: {
     alignItems: 'center',
-    marginBottom: 0,
+    marginBottom: 60,
   },
   title: {
     fontFamily: 'DMSans-Medium',
@@ -178,79 +173,36 @@ const styles = StyleSheet.create({
     color: 'rgba(0,0,0,0.6)',
     textAlign: 'center',
     letterSpacing: -0.01 * 16,
-    marginBottom: 120,
   },
-  inputSection: {
+  imageContainer: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#EAF2F9',
+    alignSelf: 'center',
     marginBottom: 60,
-  },
-  inputLabel: {
-    fontFamily: 'DMSans-SemiBold',
-    fontSize: 16,
-    color: '#000',
-    marginBottom: 8,
-  },
-  input: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#ACACAC',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    fontFamily: 'DMSans-Regular',
-    fontSize: 16,
-    color: '#000',
-  },
-  toggleSection: {
-    marginBottom: '8%',
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  toggleLabel: {
-    fontFamily: 'DMSans-SemiBold',
-    fontSize: 16,
-    color: '#000',
-  },
-  toggleDescription: {
-    fontFamily: 'DMSans-Medium',
-    fontSize: 16,
-    color: 'rgba(0,0,0,0.5)',
-    marginLeft: 4,
-  },
-  toggleTouchable: {
-    width: 48,
-    height: 30,
-    borderRadius: 15,
     overflow: 'hidden',
-    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  toggleTrack: {
+  profileImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 15,
-    justifyContent: 'center',
+    borderRadius: 100,
   },
-  toggleThumb: {
-    position: 'absolute',
-    width: 22,
-    height: 22,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 11,
-    left: 4,
-    top: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+  placeholderContainer: {
+    alignItems: 'center',
   },
-  toggleThumbActive: {
-    left: 'auto',
-    right: 4,
+  cameraIcon: {
+    width: 48,
+    height: 48,
+    marginBottom: 12,
+  },
+  uploadText: {
+    fontFamily: 'DMSans-Medium',
+    fontSize: 16,
+    color: '#000000',
+    opacity: 0.5,
   },
   bottomButtons: {
     flexDirection: 'row',
@@ -262,6 +214,7 @@ const styles = StyleSheet.create({
     width: 353,
     alignSelf: 'center',
     height: 50,
+    marginTop: 'auto',
   },
   skipButton: {
     width: 108,
