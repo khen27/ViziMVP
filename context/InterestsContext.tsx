@@ -63,4 +63,6 @@ export function useInterests() {
     throw new Error('useInterests must be used within an InterestsProvider');
   }
   return context;
-} 
+}
+
+export default InterestsContext; 
